@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 13:19:13 by hoskim            #+#    #+#             */
-/*   Updated: 2025/05/12 21:59:28 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/05/13 22:23:12 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,13 @@ void	print_status(t_philo *philo, const char *str)
 {
 	long long	time;
 
-	pthread_mutex_lock(&philo->info->print_mutex);
+	pthread_mutex_lock(&philo->shared_info_ptr->print_mutex);
 	if (!check_finish(philo, 0))
 	{
-		time = get_current_milliseconds() - philo->info->start_time;
+		time = get_current_milliseconds() - philo->shared_info_ptr->start_time;
 		printf("%lld %d %s\n", time, philo->id, str);
 	}
-	pthread_mutex_unlock(&philo->info->print_mutex);
+	pthread_mutex_unlock(&philo->shared_info_ptr->print_mutex);
 	if (str[0] == 'f')
 		printf("Philosophers survived!\n ");
 }
