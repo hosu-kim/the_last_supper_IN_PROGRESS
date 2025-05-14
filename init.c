@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 22:00:07 by hoskim            #+#    #+#             */
-/*   Updated: 2025/05/14 22:27:00 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/05/14 22:35:59 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ int	init_simulation_info(t_simulation_info *info, int argc, char *argv[])
 		return (print_error("Error: argc is not 5 or 6\n"));
 	info->num_philos = ft_atoi(argv[1]);
 	info->max_ms_without_meal = ft_atoi(argv[2]);
-	info->time_to_eat = ft_atoi(argv[3]);
-	info->time_to_sleep = ft_atoi(argv[4]);
+	info->duration_of_eating_ms = ft_atoi(argv[3]);
+	info->duration_of_sleep_ms = ft_atoi(argv[4]);
 	if (info->num_philos < 1 || info->max_ms_without_meal < 1 || \
-		info->time_to_eat < 1 || info->time_to_sleep < 1)
+		info->duration_of_eating_ms < 1 || info->duration_of_sleep_ms < 1)
 		return (print_error("Error: Wrong input\n"));
 	if (argc == 6)
 	{

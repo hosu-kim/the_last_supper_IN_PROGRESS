@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 21:14:29 by hoskim            #+#    #+#             */
-/*   Updated: 2025/05/13 22:24:15 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/05/14 22:39:51 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ typedef struct s_philo
 // ms == milliseconds
 typedef struct s_info
 {
-	int				num_philos;			 // argv[1]
-	int				max_ms_without_meal; // argv[2]
-	int				time_to_eat;		 // argv[3]
-	int				time_to_sleep;		 // argv[4]
-	int				num_must_eat;		 // argv[5]
+	int				num_philos;				 // argv[1]
+	int				max_ms_without_meal;	 // argv[2]
+	int				duration_of_eating_ms;	 // argv[3]
+	int				duration_of_sleep_ms;	 // argv[4]
+	int				num_must_eat;			 // argv[5]
 	int				num_full_philo;
 	int				finish;
 	long long		start_time;
