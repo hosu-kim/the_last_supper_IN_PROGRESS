@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/28 19:30:48 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/28 22:59:13 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,17 @@
 
 # define SUCCESS 0
 # define FAILURE 1
+
+typedef struct s_philosophter_info
+{
+	int			id;
+	int			count_of_meals;
+	int			left_fork;
+	int			right_fork;
+	long long	last_eaten_time;
+	t_simulation_info	*shared_info_ptr;
+	pthread_t	thread;
+}	t_philo_info;
 
 typedef struct s_simulation_info
 {
@@ -37,18 +48,7 @@ typedef struct s_simulation_info
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	eat_mutex;
 	pthread_mutex_t	finish_mutex;
-}	t_sim_info;
-
-typedef struct s_philosophter_info
-{
-	int			id;
-	int			count_of_meals;
-	int			id_of_left_fork;
-	int			id_of_right_fork;
-	long long	last_eaten_time;
-	t_sim_info	*shared_info_ptr;
-	pthread_t	thread;
-}	t_philo_info;
+}	t_simulation_info;
 
 int			print_error(char *error_message);
 int			ft_atoi(const char *num_in_string);
@@ -56,18 +56,22 @@ long long	get_current_milliseconds(void);
 void		print_status(t_philo_info *philo, const char *message);
 void		ft_sleep(t_philo_info *philo, long long ms);
 
-int			init_simulation_info(t_sim_info *info, int argc, char *argv[]);
-int			init_philos(t_sim_info *info);
-int			init_mutext(t_sim_info *info);
-int			create_philos(t_sim_info *info);
+int			init_simulation_info(
+			t_simulation_info *info,
+			int argc,
+			char *argv[]
+);
+int			init_philos(t_simulation_info *info);
+int			init_mutext(t_simulation_info *info);
+int			create_philos(t_simulation_info *info);
 
 int			check_death(t_philo_info *philo);
 int			check_finish(t_philo_info *philo, int yes);
 void		*philo_start(void *arg);
 
-int			free_info(t_sim_info *info);
-int			free_destroy(t_sim_info *info);
-void		join_free_destory(t_sim_info *info);
-void		destroy(t_sim_info *info);
+int			free_info(t_simulation_info *info);
+int			free_destroy(t_simulation_info *info)
+void		join_free_destroy(t_simulation_info *info);
+void		destroy(t_simulation_info *info);
 
 #endif

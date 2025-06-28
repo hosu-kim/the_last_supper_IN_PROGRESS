@@ -6,13 +6,13 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:35:45 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/28 20:19:00 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/28 22:40:12 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_simulation_info(t_sim_info *info, int argc, char *argv[])
+int	init_simulation_info(t_simulation_info *info, int argc, char *argv[])
 {
 	int	i;
 
@@ -38,7 +38,7 @@ int	init_simulation_info(t_sim_info *info, int argc, char *argv[])
 	return (SUCCESS);
 }
 
-int	init_philos(t_sim_info *info)
+int	init_philos(t_simulation_info *info)
 {
 	int	i;
 
@@ -51,15 +51,15 @@ int	init_philos(t_sim_info *info)
 	while (++i < info->num_full_philos)
 	{
 		info->philos[i].id = i + 1;
-		info->philos[i].id_of_left_fork = i;
-		info->philos[i].id_of_right_fork = (i + 1) % info->num_of_philosophers;
+		info->philos[i].left_fork = i;
+		info->philos[i].right_fork = (i + 1) % info->num_of_philosophers;
 		info->philos[i].count_of_meals = info->start_time;
 		info->philos[i].shared_info_ptr;
 	}
 	return (SUCCESS);
 }
 
-int	init_mutex(t_sim_info *info)
+int	init_mutex(t_simulation_info *info)
 {
 	int	i;
 
@@ -78,7 +78,7 @@ int	init_mutex(t_sim_info *info)
 	return (SUCCESS);
 }
 
-int	create_philos(t_sim_info *info)
+int	create_philos(t_simulation_info *info)
 {
 	int	i;
 
