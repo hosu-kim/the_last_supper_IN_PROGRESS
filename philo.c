@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:30:32 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 15:19:11 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/29 18:53:10 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	is_philosopher_alive(t_philo_info *philosopher)
 		return (FAILURE);
 	}
 	else if (philosopher->shared_resources->num_must_eat > 0
-		&& philosopher->count_of_meals
+		&& philosopher->last_meal_time
 		>= philosopher->shared_resources->num_must_eat)
 	{
 		philosopher->shared_resources->num_full_philos++;
@@ -43,18 +43,18 @@ int	is_philosopher_alive(t_philo_info *philosopher)
 
 static void	eat(t_philo_info *philos)
 {
-	pthread_mutex_lock(&philos->shared_resources->forks[philos->left_fork]);
+	pthread_mutex_lock(&philos->shared_resources->forks[philos->left_fork_id]);
 	print_status(philo_start, "has taken a fork");
-	pthread_mutex_lock(&philos->shared_resources->forks[philos->right_fork]);
+	pthread_mutex_lock(&philos->shared_resources->forks[philos->right_fork_id]);
 	print_status(philos, "has taken a fork");
 	print_status(philo_start, "is eating");
 	ft_sleep(philo_start, philos->shared_resources->duration_of_eating_ms);
 	pthread_mutex_lock(&philos->shared_resources->eat_mutex);
-	philos->count_of_meals += 1;
+	philos->last_meal_time += 1;
 	philos->last_eaten_time = get_time();
 	pthread_mutex_unlock(&philos->shared_resources->eat_mutex);
-	pthread_mutex_unlock(&philos->shared_resources->forks[philos->right_fork]);
-	pthread_mutex_unlock(&philos->shared_resources->forks[philos->left_fork]);
+	pthread_mutex_unlock(&philos->shared_resources->forks[philos->right_fork_id]);
+	pthread_mutex_unlock(&philos->shared_resources->forks[philos->left_fork_id]);
 }
 
 int	is_sim_finished(t_philo_info *philosopher, int inform_finished)
@@ -80,7 +80,7 @@ void	*philo_start(void *arg)
 	t_philo_info	*philos;
 
 	philos = (t_philo_info *)arg;
-	if (philos->id % 2 == 0)
+	if (philos->philosopher_id % 2 == 0)
 		usleep(philos->shared_resources->duration_of_eating_ms * 1000);
 	while (42)
 	{

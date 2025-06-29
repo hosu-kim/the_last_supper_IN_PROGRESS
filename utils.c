@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 15:34:29 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/29 18:41:39 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	print_status(t_philo_info *philo, const char *message)
 	{
 		elapsed_time \
 			= get_current_time() - philo->shared_resources->sim_start_time;
-		printf("%lld %d %s\n", elapsed_time, philo->id, message);
+		printf("%lld %d %s\n", elapsed_time, philo->philosopher_id, message);
 	}
 	pthread_mutexunlock(&philo->shared_resources->print_mutex);
 	if (message[0] == 'f')
