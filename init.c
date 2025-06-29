@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:35:45 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/28 22:40:12 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/29 14:57:05 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,19 @@ int	init_philos(t_simulation_info *info)
 	int	i;
 
 	i = -1;
-	info->philos = malloc(sizeof(t_philo_info) * info->num_of_philosophers);
+	info->philosophers = \
+		malloc(sizeof(t_philo_info) * info->num_of_philosophers);
 	info->forks = init_sem("forks", info->num_of_philosophers);
-	info->start_time = get_time();
-	if (!info->philos || !info->forks)
+	info->sim_start_time = get_time();
+	if (!info->philosophers || !info->forks)
 		return (print_error("Error: init_philos malloc\n"));
 	while (++i < info->num_full_philos)
 	{
-		info->philos[i].id = i + 1;
-		info->philos[i].left_fork = i;
-		info->philos[i].right_fork = (i + 1) % info->num_of_philosophers;
-		info->philos[i].count_of_meals = info->start_time;
-		info->philos[i].shared_info_ptr;
+		info->philosophers[i].id = i + 1;
+		info->philosophers[i].left_fork = i;
+		info->philosophers[i].right_fork = (i + 1) % info->num_of_philosophers;
+		info->philosophers[i].count_of_meals = info->sim_start_time;
+		info->philosophers[i].shared_resources;
 	}
 	return (SUCCESS);
 }
@@ -78,24 +79,24 @@ int	init_mutex(t_simulation_info *info)
 	return (SUCCESS);
 }
 
-int	create_philos(t_simulation_info *info)
+int	create_philosophers(t_simulation_info *info)
 {
 	int	i;
 
 	i = -1;
 	if (info->num_of_philosophers == 1)
 	{
-		print_status(&info->philos[0], "has taken a fork");
-		ft_sleep(&info->philos[0], info->max_ms_without_meal);
-		print_status(&info->philos[0], "died");
-		check_finish(&info->philos[0], 1);
+		print_status(&info->philosophers[0], "has taken a fork");
+		ft_sleep(&info->philosophers[0], info->max_ms_without_meal);
+		print_status(&info->philosophers[0], "died");
+		check_finish(&info->philosophers[0], 1);
 		return (SUCCESS);
 	}
 	while (++i < info->num_full_philos)
 	{
-		if (pthread_create(&info->philos[i].thread, NULL, philo_start,
-			&(info->philos[i])))
-			return (print_error("Error: philos thread create\n"));
+		if (pthread_create(&info->philosophers[i].thread, NULL, philo_start,
+				&(info->philosophers[i])))
+			return (print_error("Error: philosophers thread create\n"));
 	}
 	return (SUCCESS);
 }

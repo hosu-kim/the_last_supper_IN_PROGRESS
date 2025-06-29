@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 18:53:10 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/28 22:58:21 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/29 15:05:00 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	free_info(t_simulation_info *info)
 {
-	free(info->philos);
+	free(info->philosophers);
 	free(info->forks);
 	return (SUCCESS);
 }
@@ -36,10 +36,10 @@ int	free_destroy(t_simulation_info *info)
 void	join_free_destroy(t_simulation_info *info)
 {
 	int	i;
-	
+
 	i = -1;
 	while (++i < info->num_of_philosophers)
-		pthread_join(info->philos[i].thread, NULL);
+		pthread_join(info->philosophers[i].thread, NULL);
 	free_destroy(info);
 }
 
@@ -55,7 +55,7 @@ void	destroy(t_simulation_info *info)
 		info->num_full_philos = 0;
 		while (++i < info->num_full_philos)
 		{
-			if (yes && check_death(&info->philos[i]))
+			if (yes && is_philosopher_alive(&info->philosophers[i]))
 				yes = 0;
 		}
 		usleep(10);

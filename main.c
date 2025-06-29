@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:52:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/28 22:55:02 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/06/29 14:57:12 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(int argc, char *argv[])
 		return (SUCCESS);
 	if (init_philos(&info))
 		return (free_info(&info));
-	if (init_mutext(&info))
+	if (init_mutex(&info))
 		return (free_destroy(&info));
 	if (create_philos(&info))
 		return (SUCCESS);
