@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:30:32 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 18:53:10 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/01 20:57:40 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	is_philosopher_alive(t_philo_info *philosopher)
 {
 	pthread_mutext_lock(&philosopher->shared_resources->eat_mutex);
 	if ((get_time() - philosopher->last_eaten_time)
-		>= philosopher->shared_resources->max_ms_without_meal)
+		>= philosopher->shared_resources->max_time_without_meal)
 	{
 		print_status(philosopher, "died :(");
 		check_finish(philosopher, 1);
@@ -27,9 +27,9 @@ int	is_philosopher_alive(t_philo_info *philosopher)
 		&& philosopher->last_meal_time
 		>= philosopher->shared_resources->num_must_eat)
 	{
-		philosopher->shared_resources->num_full_philos++;
-		if (philosopher->shared_resources->num_full_philos
-			>= philosopher->shared_resources->num_of_philosophers)
+		philosopher->shared_resources->num_of_full_philos++;
+		if (philosopher->shared_resources->num_of_full_philos
+			>= philosopher->shared_resources->num_of_philos)
 		{
 			check_finish(philosopher, 1);
 			print_status(philosopher, "f");
@@ -48,7 +48,7 @@ static void	eat(t_philo_info *philos)
 	pthread_mutex_lock(&philos->shared_resources->forks[philos->right_fork_id]);
 	print_status(philos, "has taken a fork");
 	print_status(philo_start, "is eating");
-	ft_sleep(philo_start, philos->shared_resources->duration_of_eating_ms);
+	ft_sleep(philo_start, philos->shared_resources->eating_duration);
 	pthread_mutex_lock(&philos->shared_resources->eat_mutex);
 	philos->last_meal_time += 1;
 	philos->last_eaten_time = get_time();
@@ -62,11 +62,11 @@ int	is_sim_finished(t_philo_info *philosopher, int inform_finished)
 	pthread_mutex_lock(&philosopher->shared_resources->finish_mutex);
 	if (inform_finished == YES)
 	{
-		philosopher->shared_resources->finish = 1;
+		philosopher->shared_resources->is_sim_finished = 1;
 		pthread_mutex_unlock(&philosopher->shared_resources->finish_mutex);
 		return (YES);
 	}
-	if (philosopher->shared_resources->finish)
+	if (philosopher->shared_resources->is_sim_finished)
 	{
 		pthread_mutex_unlock(&philosopher->shared_resources->finish_mutex);
 		return (YES);
@@ -81,14 +81,14 @@ void	*philo_start(void *arg)
 
 	philos = (t_philo_info *)arg;
 	if (philos->philosopher_id % 2 == 0)
-		usleep(philos->shared_resources->duration_of_eating_ms * 1000);
+		usleep(philos->shared_resources->eating_duration * 1000);
 	while (42)
 	{
 		if (check_finish(philos, 0))
 			return (SUCCESS);
 		eat(philos);
 		print_status(philos, "is sleeping");
-		ft_sleep(philos, philos->shared_resources->duration_of_sleep_ms);
+		ft_sleep(philos, philos->shared_resources->sleeping_duration);
 		print_status(philos, "is thinking");
 	}
 	return (SUCCESS);

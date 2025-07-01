@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 18:53:10 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 15:05:00 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/01 21:09:38 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	free_info(t_simulation_info *info)
 {
-	free(info->philosophers);
+	free(info->philos);
 	free(info->forks);
 	return (SUCCESS);
 }
@@ -24,7 +24,7 @@ int	free_destroy(t_simulation_info *info)
 	int	i;
 
 	i = -1;
-	while (++i < info->num_of_philosophers)
+	while (++i < info->num_of_philos)
 		pthread_mutex_destroy(&info->forks[i]);
 	free_info(info);
 	pthread_mutex_destroy(&info->print_mutex);
@@ -38,8 +38,8 @@ void	join_free_destroy(t_simulation_info *info)
 	int	i;
 
 	i = -1;
-	while (++i < info->num_of_philosophers)
-		pthread_join(info->philosophers[i].thread, NULL);
+	while (++i < info->num_of_philos)
+		pthread_join(info->philos[i].thread, NULL);
 	free_destroy(info);
 }
 
@@ -52,10 +52,10 @@ void	destroy(t_simulation_info *info)
 	while (yes)
 	{
 		i = -1;
-		info->num_full_philos = 0;
-		while (++i < info->num_full_philos)
+		info->num_of_philos = 0;
+		while (++i < info->num_of_full_philos)
 		{
-			if (yes && is_philosopher_alive(&info->philosophers[i]))
+			if (yes && is_philosopher_alive(&info->philos[i]))
 				yes = 0;
 		}
 		usleep(10);

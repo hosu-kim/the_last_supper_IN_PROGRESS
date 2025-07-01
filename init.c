@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:35:45 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 18:55:47 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/01 20:55:16 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ int	init_simulation_info(t_simulation_info *info, int argc, char *argv[])
 		return (print_error("Error: wrong input\n"));
 	if (argc == 6)
 	{
-		info->num_of_philos_must_eat = ft_atoi(argv[5]);
-		if (info->num_of_philos_must_eat < 1)
+		info->num_must_eat = ft_atoi(argv[5]);
+		if (info->num_must_eat < 1)
 			return (print_error("Error: wrong input\n"));
 	}
 	else
-		info->num_of_philos_must_eat = -1;
+		info->num_must_eat = -1;
 	info->is_sim_finished = 0;
 	return (SUCCESS);
 }

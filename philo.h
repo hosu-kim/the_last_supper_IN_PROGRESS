@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 18:53:10 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/01 20:56:18 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ typedef struct s_simulation_info
 	int				max_time_without_meal;
 	int				eating_duration;
 	int				sleeping_duration;
-	int				num_of_philos_must_eat;
-	int				num_of_philos;
+	int				num_must_eat;
+	int				num_of_full_philos;
 	int				is_sim_finished;
 	long long		sim_start_time;
 	t_philo_info	*philos;
