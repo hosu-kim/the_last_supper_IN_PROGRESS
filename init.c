@@ -5,99 +5,84 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/28 17:35:45 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/01 20:55:16 by hoskim           ###   ########seoul.kr  */
+/*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
+/*   Updated: 2025/07/04 19:51:15 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_simulation_info(t_simulation_info *info, int argc, char *argv[])
+static int	init_args(t_sim_info *info, int argc, char *argv[])
 {
-	int	i;
-
-	i = 0;
-	if (argc < 5 || 6 > argc)
-		return (print_error("Error: The number of argc is not 5 or 6\n"));
+	if (argc != 5 && argc != 6)
+		return (print_error("Error: Wrong number of arguments\n"));
 	info->num_of_philos = ft_atoi(argv[1]);
 	info->max_time_without_meal = ft_atoi(argv[2]);
 	info->eating_duration = ft_atoi(argv[3]);
 	info->sleeping_duration = ft_atoi(argv[4]);
 	if (info->num_of_philos < 1 || info->max_time_without_meal < 1
 		|| info->eating_duration < 1 || info->sleeping_duration < 1)
-		return (print_error("Error: wrong input\n"));
+		return (print_error("Error: Invalid argument value.\n"));
 	if (argc == 6)
 	{
 		info->num_must_eat = ft_atoi(argv[5]);
 		if (info->num_must_eat < 1)
-			return (print_error("Error: wrong input\n"));
+			return (print_error("Error: Invalid number of meals.\n"));
 	}
 	else
 		info->num_must_eat = -1;
-	info->is_sim_finished = 0;
+	info->sim_finished = 0;
+	info->num_of_full_philos = 0;
 	return (SUCCESS);
 }
 
-int	init_philo_info(t_simulation_info *sim_info)
+static int	init_philos(t_sim_info *info)
 {
 	int	i;
 
+	info->philos = malloc(sizeof(t_philo_info) * info->num_of_philos);
+	info->forks = malloc(sizeof(pthread_mutex_t) * info->num_of_philos);
+	if (!info->philos || !info->forks)
+		return (print_error("Error: Malloc failed\n"));
 	i = 0;
-	sim_info->philos = malloc(sizeof(t_philo_info) * sim_info->num_of_philos);
-	sim_info->forks = malloc(sizeof(pthread_mutex_t) * sim_info->num_of_philos);
-	if (!sim_info->philos || !sim_info->forks)
-		return (print_error("Error: init_philos malloc.\n"));
-	sim_info->sim_start_time = get_current_time();
-	while (i < sim_info->num_of_philos)
+	while (i < info->num_of_philos)
 	{
-		sim_info->philos[i].philosopher_id = i + 1;
-		sim_info->philos[i].left_fork_id = i;
-		sim_info->philos[i].right_fork_id = \
-			(i + 1) % sim_info->num_of_philos;
-		sim_info->philos[i].last_meal_time = sim_info->sim_start_time;
-		sim_info->philos[i].shared_resources = sim_info;
+		info->philos[i].philosopher_id = i + 1;
+		info->philos[i].left_fork_id = i;
+		info->philos[i].right_fork_id = (i + 1) % info->num_of_philos;
+		info->philos[i].sim_info = info;
+		info->philos[i].meal_count = 0;
+		info->philos[i].last_eaten_time = 0;
 		i++;
 	}
 	return (SUCCESS);
 }
 
-int	init_mutex(t_simulation_info *sim_info)
+static int	init_mutexes(t_sim_info *info)
 {
 	int	i;
 
-	i = -1;
-	while (++i < sim_info->num_of_philos)
+	i = 0;
+	while (i < info->num_of_philos)
 	{
-		if (pthread_mutex_init(&sim_info->forks[i], NULL))
-			return (print_error("Error: forks mutex_init\n"));
+		if (pthread_mutex_init(&info->forks[i], NULL) != 0)
+			return (print_error("Error: Mutex init failed.\n"));
+		i++;
 	}
-	if (pthread_mutex_init(&sim_info->print_mutex, NULL))
-		return (print_error("Error: print mutex_init\n"));
-	if (pthread_mutex_init(&sim_info->eat_mutex, NULL))
-		return (print_error("Error: eat mutex_init\n"));
-	if (pthread_mutex_init(&sim_info->finish_mutex, NULL))
-		return (print_error("Error: finish mutex_init\n"));
+	if (pthread_mutex_init(&info->print_mutex, NULL) != 0)
+		return (print_error("Error: Mutex init failed.\n"));
+	if (pthread_mutex_init(&info->data_mutex, NULL) != 0)
+		return (print_error("Error: Mutex init failed.\n"));
 	return (SUCCESS);
 }
 
-int	create_philosophers(t_simulation_info *sim_info)
+int	init_simulation(t_sim_info *info, int argc, char *argv[])
 {
-	int	i;
-
-	i = -1;
-	if (sim_info->num_of_philos == 1)
-	{
-		print_status(&sim_info->philos[0], "has taken a fork");
-		ft_sleep(&sim_info->philos[0], sim_info->max_time_without_meal);
-		print_status(&sim_info->philos[0], "died");
-		check_finish(&sim_info->philos[0], 1);
-		return (SUCCESS);
-	}
-	while (++i < sim_info->num_of_philos)
-	{
-		if (pthread_create(&sim_info->philos[i].thread, NULL, philo_start,
-				&(sim_info->philos[i])))
-			return (print_error("Error: philosophers thread create\n"));
-	}
+	if (init_args(info, argc, argv) != SUCCESS)
+		return (FAILURE);
+	if (init_philos(info) != SUCCESS)
+		return (FAILURE);
+	if (init_mutexes(info) != SUCCESS)
+		return (FAILURE);
 	return (SUCCESS);
 }

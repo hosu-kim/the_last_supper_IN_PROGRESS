@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/06/29 18:41:39 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/04 19:51:30 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,34 @@
 
 int	print_error(char *error_message)
 {
-	while (*error_message)
-	{
-		write(2, error_message, 1);
-		error_message++;
-	}
+	int	len;
+
+	len = 0;
+	while (error_message[len])
+		len++;
+	write(2, error_message, len);
 	return (FAILURE);
 }
 
 int	ft_atoi(const char *num_in_string)
 {
-	int			i;
+	long long	res;
 	int			sign;
-	long long	output;
 
-	i = 0;
+	res = 0;
 	sign = 1;
-	output = 0;
-	if (num_in_string[i] == '-')
+	while (*num_in_string == ' ' || (*num_in_string >= 9 && *num_in_string <= 13))
+		num_in_string++;
+	if (*num_in_string == '-')
 		sign = -1;
-	if (num_in_string[i] == '-' || num_in_string[i] == '+')
-		i++;
-	while (num_in_string[i])
+	if (*num_in_string == '-' || *num_in_string == '+')
+		num_in_string++;
+	while (*num_in_string >= '0' && *num_in_string <= '9')
 	{
-		if (num_in_string[i] < '0' || '9' < num_in_string[i])
-			return (FAILURE);
-		if ('0' <= num_in_string[i] && num_in_string[i] <= '9')
-			output = output * 10 + (num_in_string[i] - '0');
-		i++;
+		res = res * 10 + (*num_in_string - '0');
+		num_in_string++;
 	}
-	return (output * sign);
+	return ((int)(res * sign));
 }
 
 /**
@@ -62,28 +60,38 @@ long long	get_current_time(void)
 	return ((timeval.tv_sec * 1000) + (timeval.tv_usec / 1000));
 }
 
-void	print_status(t_philo_info *philo, const char *message)
+int	has_simulation_ended(t_sim_info *info)
+{
+	int	result;
+
+	pthread_mutex_lock(&info->data_mutex);
+	result = info->sim_finished;
+	pthread_mutex_unlock(&info->data_mutex);
+	return (result);
+}
+
+void	print_status(t_philo_info *philo, const char *message, int is_dead)
 {
 	long long	elapsed_time;
 
-	pthread_mutex_lock(&philo->shared_resources->print_mutex);
-	if (!is_sim_finished(philo, 0))
+	pthread_mutex_lock(&philo->sim_info->print_mutex);
+	if (has_simulation_ended(philo->sim_info) == NO || is_dead)
 	{
-		elapsed_time \
-			= get_current_time() - philo->shared_resources->sim_start_time;
+		elapsed_time = get_current_time() - philo->sim_info->sim_start_time;
 		printf("%lld %d %s\n", elapsed_time, philo->philosopher_id, message);
 	}
-	pthread_mutexunlock(&philo->shared_resources->print_mutex);
-	if (message[0] == 'f')
-		printf("All philosophers survived.\n");
+	pthread_mutex_unlock(&philo->sim_info->print_mutex);
 }
 
 void	ft_sleep(t_philo_info *philo, long long sleep_duration)
 {
-	long long	start_time_to_sleep;
+	long long	start_time;
 
-	start_time_to_sleep = get_current_time();
-	while (is_sim_finished(philo, NO) == NO
-		&& (get_current_time() - start_time_to_sleep) < sleep_duration)
+	start_time = get_current_time();
+	while (has_simulation_ended(philo->sim_info) == NO)
+	{
+		if ((get_current_time() - start_time) >= sleep_duration)
+			break ;
 		usleep(100);
+	}
 }
