@@ -6,24 +6,24 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:52:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/04 19:49:45 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/05 15:48:33 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	start_threads(t_sim_info *info)
+static int	launch_philosopher_threads(t_simulation *sim)
 {
 	int	i;
 
 	i = 0;
-	info->sim_start_time = get_current_time();
-	while (i < info->num_of_philos)
+	sim->start_time = get_current_time_ms();
+	while (i < sim->philosopher_count)
 	{
-		info->philos[i].last_eaten_time = info->sim_start_time;
-		if (pthread_create(&info->philos[i].thread, NULL, \
-				philo_routine, &info->philos[i]) != 0)
-			return (print_error("Error: Thread creation failed.\n"));
+		sim->philosophers[i].last_meal_time = sim->start_time;
+		if (pthread_create(&sim->philosophers[i].thread, NULL, \
+				philosopher_lifecycle, &sim->philosophers[i]) != 0)
+			return (print_error("Error: Failed to create philosopher thread.\n"));
 		i++;
 	}
 	return (SUCCESS);
@@ -31,16 +31,16 @@ static int	start_threads(t_sim_info *info)
 
 int	main(int argc, char *argv[])
 {
-	t_sim_info	sim_info;
+	t_simulation	simulation;
 
-	if (init_simulation(&sim_info, argc, argv) != SUCCESS)
+	if (initialize_simulation(&simulation, argc, argv) != SUCCESS)
 		return (FAILURE);
-	if (start_threads(&sim_info) != SUCCESS)
+	if (launch_philosopher_threads(&simulation) != SUCCESS)
 	{
-		free(sim_info.philos);
-		free(sim_info.forks);
+		free(simulation.philosophers);
+		free(simulation.fork_mutexes);
 		return (FAILURE);
 	}
-	monitor_and_cleanup(&sim_info);
+	monitor_simulation_and_cleanup(&simulation);
 	return (SUCCESS);
 }

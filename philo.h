@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/04 19:51:46 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/05 19:48:25 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,50 +21,48 @@
 
 # define SUCCESS 0
 # define FAILURE 1
-# define YES 1
-# define NO 0
+# define TRUE 1
+# define FALSE 0
 
-typedef struct s_sim_info	t_sim_info;
+typedef struct s_simulation	t_simulation;
 
-typedef struct s_philosopher_info
+typedef struct s_philosopher
 {
-	int				philosopher_id;
-	int				meal_count;
-	int				last_meal_time;
-	int				left_fork_id;
-	int				right_fork_id;
-	long long		last_eaten_time;
-	t_sim_info		*sim_info;
+	int				id;
+	int				meals_eaten;
+	int				left_fork_index;
+	int				right_fork_index;
+	long long		last_meal_time;
+	t_simulation	*simulation;
 	pthread_t		thread;
-}	t_philo_info;
+}	t_philosopher;
 
-typedef struct s_sim_info
+typedef struct s_simulation
 {
-	int				num_of_philos;
-	int				max_time_without_meal;
-	int				eating_duration;
-	int				sleeping_duration;
-	int				num_must_eat;
-	int				num_of_full_philos;
-	int				sim_finished;
-	long long		sim_start_time;
-	t_philo_info	*philos;
-	pthread_mutex_t	*forks;
+	int				philosopher_count;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				required_meals;
+	int				simulation_ended;
+	long long		start_time;
+	t_philosopher	*philosophers;
+	pthread_mutex_t	*fork_mutexes;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	data_mutex;
-}	t_sim_info;
+}	t_simulation;
 
 int			print_error(char *error_message);
-int			ft_atoi(const char *num_in_string);
-long long	get_current_time(void);
-int	has_simulation_ended(t_sim_info *info);
-void	print_status(t_philo_info *philo, const char *message, int is_dead);
-void		ft_sleep(t_philo_info *philo, long long ms);
+int			ft_atoi(const char *str);
+long long	get_current_time_ms(void);
+int			is_simulation_finished(t_simulation *sim);
+void		print_philosopher_status(t_philosopher *philo, const char *message, int is_death);
+void		philo_sleep(t_philosopher *philo, long long duration_ms);
 
-int	init_simulation(t_sim_info *info, int argc, char *argv[]);
+int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
 
-void	*philo_routine(void *arg);
+void		*philosopher_lifecycle(void *arg);
 
-void	monitor_and_cleanup(t_sim_info *info);
+void		monitor_simulation_and_cleanup(t_simulation *sim);
 
 #endif

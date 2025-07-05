@@ -6,11 +6,10 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/04 19:51:30 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/05 18:37:20 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
-// 2025-06-29 15:34:00: code review completed
 #include "philo.h"
 
 int	print_error(char *error_message)
@@ -24,74 +23,79 @@ int	print_error(char *error_message)
 	return (FAILURE);
 }
 
-int	ft_atoi(const char *num_in_string)
+int	ft_atoi(const char *str)
 {
-	long long	res;
+	long long	result;
 	int			sign;
 
-	res = 0;
+	result = 0;
 	sign = 1;
-	while (*num_in_string == ' ' || (*num_in_string >= 9 && *num_in_string <= 13))
-		num_in_string++;
-	if (*num_in_string == '-')
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-')
 		sign = -1;
-	if (*num_in_string == '-' || *num_in_string == '+')
-		num_in_string++;
-	while (*num_in_string >= '0' && *num_in_string <= '9')
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str >= '0' && *str <= '9')
 	{
-		res = res * 10 + (*num_in_string - '0');
-		num_in_string++;
+		result = result * 10 + (*str - '0');
+		str++;
 	}
-	return ((int)(res * sign));
+	return ((int)(result * sign));
 }
 
 /**
  * @brief Gets the current time.
  * @note gettimeofday(struct timeval *tv, struct timezone *tz):
- *  Stores the current time since the Unix epoch (1970-01-01 00:00:00 UTC)
- *  into the timeval structure: tv_sec for seconds,
- *  and tv_usec for microseconds.
+ *        Stores the current time since the Unix epoch (1970-01-01 00:00:00 UTC)
+ *        into the timeval structure: tv_sec for seconds, and tv_usec for microseconds.
  */
-long long	get_current_time(void)
+long long	get_current_time_ms(void)
 {
-	struct timeval	timeval;
+	struct timeval	tv;
 
-	gettimeofday(&timeval, NULL);
-	return ((timeval.tv_sec * 1000) + (timeval.tv_usec / 1000));
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-int	has_simulation_ended(t_sim_info *info)
+int	is_simulation_finished(t_simulation *sim)
 {
-	int	result;
+	int	finished;
 
-	pthread_mutex_lock(&info->data_mutex);
-	result = info->sim_finished;
-	pthread_mutex_unlock(&info->data_mutex);
-	return (result);
+	pthread_mutex_lock(&sim->data_mutex);
+	finished = sim->simulation_ended;
+	pthread_mutex_unlock(&sim->data_mutex);
+	return (finished);
 }
 
-void	print_status(t_philo_info *philo, const char *message, int is_dead)
+void	print_philosopher_status(t_philosopher *philo, const char *message, int is_death)
 {
-	long long	elapsed_time;
+	long long		elapsed_time;
+	t_simulation	*sim;
 
-	pthread_mutex_lock(&philo->sim_info->print_mutex);
-	if (has_simulation_ended(philo->sim_info) == NO || is_dead)
+	sim = philo->simulation;
+	pthread_mutex_lock(&sim->print_mutex);
+	if (!sim->simulation_ended || is_death)
 	{
-		elapsed_time = get_current_time() - philo->sim_info->sim_start_time;
-		printf("%lld %d %s\n", elapsed_time, philo->philosopher_id, message);
+		elapsed_time = get_current_time_ms() - sim->start_time;
+		printf("%lld %d %s\n", elapsed_time, philo->id, message);
+		if (is_death)
+			sim->simulation_ended = TRUE;
 	}
-	pthread_mutex_unlock(&philo->sim_info->print_mutex);
+	pthread_mutex_unlock(&sim->print_mutex);
 }
 
-void	ft_sleep(t_philo_info *philo, long long sleep_duration)
+void	philo_sleep(t_philosopher *philo, long long duration_ms)
 {
 	long long	start_time;
+	long long	elapsed_time;
 
-	start_time = get_current_time();
-	while (has_simulation_ended(philo->sim_info) == NO)
+	start_time = get_current_time_ms();
+	while (!is_simulation_finished(philo->simulation))
 	{
-		if ((get_current_time() - start_time) >= sleep_duration)
+		elapsed_time = get_current_time_ms() - start_time;
+		if (elapsed_time >= duration_ms)
 			break ;
-		usleep(100);
+		usleep(500);
 	}
 }

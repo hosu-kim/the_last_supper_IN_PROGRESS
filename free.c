@@ -6,100 +6,112 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/04 20:10:12 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/05 15:48:09 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	check_death(t_sim_info *info)
+static int	check_for_death(t_simulation *sim)
 {
-	int	i;
+	int			i;
+	long long	current_time;
+	long long	time_since_last_meal;
 
 	i = 0;
-	while (i < info->num_of_philos)
+	current_time = get_current_time_ms();
+	while (i < sim->philosopher_count)
 	{
-		if ((get_current_time() - info->philos[i].last_eaten_time)
-		> info->max_time_without_meal)
+		time_since_last_meal = current_time - sim->philosophers[i].last_meal_time;
+		if (time_since_last_meal >= sim->time_to_die)
 		{
-			info->sim_finished = YES;
-			print_status(&info->philos[i], "died", YES);
-			return (YES);
+			sim->simulation_ended = TRUE;
+			return (i + 1);
 		}
 		i++;
 	}
-	return (NO);
+	return (FALSE);
 }
 
-static int	check_all_ate(t_sim_info *info)
+static int	check_all_philosophers_satisfied(t_simulation *sim)
 {
 	int	i;
-	int	full_philos_count;
+	int	satisfied_count;
 
-	if (info->num_must_eat == -1)
-		return (NO);
+	if (sim->required_meals == -1)
+		return (FALSE);
 	i = 0;
-	full_philos_count = 0;
-	while (i < info->num_of_philos)
+	satisfied_count = 0;
+	while (i < sim->philosopher_count)
 	{
-		if (info->philos[i].meal_count >= info->num_must_eat)
-			full_philos_count++;
+		if (sim->philosophers[i].meals_eaten >= sim->required_meals)
+			satisfied_count++;
 		i++;
 	}
-	if (full_philos_count >= info->num_of_philos)
+	if (satisfied_count >= sim->philosopher_count)
 	{
-		info->sim_finished = YES;
-		return (YES);
+		sim->simulation_ended = TRUE;
+		return (TRUE);
 	}
-	return (NO);
+	return (FALSE);
 }
 
-static int	check_philosopher_status(t_sim_info *info)
+static int	evaluate_simulation_status(t_simulation *sim)
 {
-	pthread_mutex_lock(&info->data_mutex);
-	if (check_death(info) == YES)
+	int	death_philosopher_id;
+	int	all_satisfied;
+
+	pthread_mutex_lock(&sim->data_mutex);
+	death_philosopher_id = check_for_death(sim);
+	if (death_philosopher_id > 0)
 	{
-		pthread_mutex_unlock(&info->data_mutex);
-		return (YES);
+		pthread_mutex_unlock(&sim->data_mutex);
+		print_philosopher_status(&sim->philosophers[death_philosopher_id - 1], "died", TRUE);
+		return (TRUE);
 	}
-	if (check_all_ate(info) == YES)
-	{
-		pthread_mutex_unlock(&info->data_mutex);
-		return (YES);
-	}
-	pthread_mutex_unlock(&info->data_mutex);
-	return (NO);
+	all_satisfied = check_all_philosophers_satisfied(sim);
+	pthread_mutex_unlock(&sim->data_mutex);
+	return (all_satisfied);
 }
 
-static void	destroy_resources(t_sim_info *info)
+static void	cleanup_simulation_resources(t_simulation *sim)
 {
 	int	i;
 
-	i = 0;
-	while (i < info->num_of_philos)
+	i = -1;
+	while (++i < sim->philosopher_count)
+		pthread_join(sim->philosophers[i].thread, NULL);
+	i = -1;
+	while (++i < sim->philosopher_count)
+		pthread_mutex_destroy(&sim->fork_mutexes[i]);
+	pthread_mutex_destroy(&sim->print_mutex);
+	pthread_mutex_destroy(&sim->data_mutex);
+	if (sim->philosophers)
 	{
-		pthread_join(info->philos[i].thread, NULL);
-		i++;
+		free(sim->philosophers);
+		sim->philosophers = NULL;
 	}
-	i = 0;
-	while (i < info->num_of_philos)
+	if (sim->fork_mutexes)
 	{
-		pthread_mutex_destroy(&info->forks[i]);
-		i++;
+		free(sim->fork_mutexes);
+		sim->fork_mutexes = NULL;
 	}
-	pthread_mutex_destroy(&info->print_mutex);
-	pthread_mutex_destroy(&info->data_mutex);
-	free(info->philos);
-	free(info->forks);
 }
 
-void	monitor_and_cleanup(t_sim_info *info)
+void	monitor_simulation_and_cleanup(t_simulation *sim)
 {
-	while (1)
+	int	check_interval_us;
+
+	check_interval_us = sim->time_to_die / 10;
+	if (check_interval_us < 500)
+		check_interval_us = 500;
+	if (check_interval_us > 5000)
+		check_interval_us = 5000;
+	while (TRUE)
 	{
-		if (check_philosopher_status(info) == YES)
+		if (evaluate_simulation_status(sim) == TRUE)
 			break ;
-		usleep(1000);
+		usleep(check_interval_us);
 	}
-	destroy_resources(info);
+	cleanup_simulation_resources(sim);
 }
