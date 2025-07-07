@@ -6,12 +6,21 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/05 18:37:20 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/07 18:48:34 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Prints the provided error message to standard error output.
+ * 
+ * This function calulates the length of the error message and writes it
+ * to file descriptor 2 (stderr), then returns the failure status code (1).
+ * 
+ * @param error_message Null-terminated string containing the error message to display
+ * @return FAILURE indicating the error condition 1
+ */
 int	print_error(char *error_message)
 {
 	int	len;
@@ -23,6 +32,18 @@ int	print_error(char *error_message)
 	return (FAILURE);
 }
 
+/**
+ * @brief Converts a string to an integer. atoi implementation)
+ * 
+ * Parses the string and converts it to an integer, handling leading
+ * whitespace, optional sign, and consecutive digits.
+ * 
+ * Uses long long for intermediate calculations to prevent overflow during conversion,
+ * then safely casts to int for the final result.
+ * 
+ * @param str Null-terminated string to convert
+ * @return Converted integer value, or 0 if no valid conversion possible
+ */
 int	ft_atoi(const char *str)
 {
 	long long	result;
@@ -30,7 +51,7 @@ int	ft_atoi(const char *str)
 
 	result = 0;
 	sign = 1;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))
+	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
 		str++;
 	if (*str == '-')
 		sign = -1;
@@ -45,10 +66,20 @@ int	ft_atoi(const char *str)
 }
 
 /**
- * @brief Gets the current time.
- * @note gettimeofday(struct timeval *tv, struct timezone *tz):
- *        Stores the current time since the Unix epoch (1970-01-01 00:00:00 UTC)
- *        into the timeval structure: tv_sec for seconds, and tv_usec for microseconds.
+ * @brief Gets the current time in milliseconds.
+ * 
+ * This function utilizes the gettimeofday() system call to retrieve the
+ * time elapsed since the Unix epoch (1970-01-01 00:00:00 UTC).
+ * 
+ * The time is stored in a `timeeval` struct, which contains:
+ *  - tv_sec: The number of seconds.
+ *  - tv_usec: The number of additional microseconds.
+ * 
+ * The function then converts these values into a single millisecond value.
+ * 
+ * @return The current time in milliseconds since the Epoch.
+ * @note The second parameter (timezone) of gettimeofday() is set to NULL
+ *       because the parameter is not used anymore.
  */
 long long	get_current_time_ms(void)
 {
@@ -58,6 +89,16 @@ long long	get_current_time_ms(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
+/**
+ * @brief Checks if the simulation has finished.
+ * 
+ * This function safely checks the `simulation_ended` flag within the
+ * `t_simulation` structure using a mutex to ensure thread-safe access.
+ * 
+ * @param sim A pointer to the simulation structure.
+ * @return An integer inicating whether the simulation has ended (1 for finished, 0 for not
+ *         finished.)
+ */
 int	is_simulation_finished(t_simulation *sim)
 {
 	int	finished;
