@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/07 18:48:34 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/08 00:05:08 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int	ft_atoi(const char *str)
  * time elapsed since the Unix epoch (1970-01-01 00:00:00 UTC).
  * 
  * The time is stored in a `timeeval` struct, which contains:
- *  - tv_sec: The number of seconds.
- *  - tv_usec: The number of additional microseconds.
+ * - tv_sec: The number of seconds.
+ * - tv_usec: The number of additional microseconds.
  * 
  * The function then converts these values into a single millisecond value.
  * 
@@ -109,6 +109,23 @@ int	is_simulation_finished(t_simulation *sim)
 	return (finished);
 }
 
+/**
+ * @brief Prints the current status of a philosopher with timestamp.
+ * 
+ * This function safely prints philosopher status messages (eating, sleeping,
+ * thinking, taking fork, or dying) with proper synchronization using mutex.
+ * The output format is: "[timestamp] [philosopher_id] [message]"
+ * 
+ * Special handling for death messages:
+ * - Death messages are always printed even after simulation ends
+ * - Death message automatically sets simulation_ended flag to TRUE
+ * - Regular status messages are supperessed once simulation ends
+ * 
+ * @param philo Pointer to the philosopher structure
+ * @param message Status message to print (e.g., "is eating", "died")
+ * @param is_death Boolean flag indicating if the status message is a death message
+ *                 (1 for death, 0 for normal status)
+ */
 void	print_philosopher_status(t_philosopher *philo, const char *message, int is_death)
 {
 	long long		elapsed_time;
