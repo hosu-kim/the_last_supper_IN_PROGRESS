@@ -6,18 +6,18 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/05 19:48:25 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/08 18:34:37 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <stdlib.h>
-# include <stdio.h>
-# include <pthread.h>
-# include <unistd.h>
-# include <sys/time.h>
+# include <stdlib.h> // malloc(), free()
+# include <stdio.h> // printf()
+# include <pthread.h> // pthread_create(), pthread_mutex_lock()...
+# include <unistd.h> // write(), usleep()
+# include <sys/time.h> // gettimeofday(), struct timeval
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -26,32 +26,56 @@
 
 typedef struct s_simulation	t_simulation;
 
+/**
+ * @brief Philosopher structure
+ * 
+ * Represents a philosopher in the Dining Philosophers Problem.
+ * Each philosopher has a unique ID, meal count, fork indices, last meal time,
+ * and runs on its own thread.
+ */
 typedef struct s_philosopher
 {
 	int				id;
-	int				meals_eaten;
-	int				left_fork_index;
-	int				right_fork_index;
+	// ^^^ Unique identifier for the philosopher (starting from 1).
+	int				meals_eaten; // < Number of meals eaten so far.
+	int				left_fork_index; // < Index of the left fork.
+	int				right_fork_index; // < Index of the right fork.
 	long long		last_meal_time;
-	t_simulation	*simulation;
-	pthread_t		thread;
+	// ^^^ Timestamp of the last meal start in milliseconds.
+	t_simulation	*simulation; // < Pointer to the simulation data.
+	pthread_t		thread; // < Thread handle for this philosopher.
 }	t_philosopher;
 
+/**
+ * @brief Simulation structure for the Dining Philosophers Problem
+ * 
+ * Contains all the configuration parameters and shared resources needed
+ * for the dining philosophers simulation. This structure is shared among
+ * all philosopher threads and contains synchronization primitives.
+ */
 typedef struct s_simulation
 {
 	int				philosopher_count;
+	// ^^^ Number of philosophers in the simulation.
 	int				time_to_die;
+	// ^^^ Time (ms) after which a philosopher dies if not eating.
 	int				time_to_eat;
+	// ^^^ Time (ms) it takes for a philosopher to eat.
 	int				time_to_sleep;
+	// ^^^ Time (ms) a philosopher sleeps after eating.
 	int				required_meals;
+	// ^^^ Number od meals each philosopher must eat (-1 if unlimited).
 	int				simulation_ended;
+	// ^^^ Flag indicating if the simulation has ended.
 	long long		start_time;
-	t_philosopher	*philosophers;
-	pthread_mutex_t	*fork_mutexes;
-	pthread_mutex_t	print_mutex;
-	pthread_mutex_t	data_mutex;
+	// ^^^ Timestamp when the simulation started (in milliseconds).
+	t_philosopher	*philosophers; // < Array of philosopher structures.
+	pthread_mutex_t	*fork_mutexes; // < Array of mutex locks for each fork.
+	pthread_mutex_t	print_mutex; // < Mutex for synchronized printing to stdout.
+	pthread_mutex_t	data_mutex; // < Mutex for protecting shared data access.
 }	t_simulation;
 
+// utils.c
 int			print_error(char *error_message);
 int			ft_atoi(const char *str);
 long long	get_current_time_ms(void);
@@ -59,6 +83,7 @@ int			is_simulation_finished(t_simulation *sim);
 void		print_philosopher_status(t_philosopher *philo, const char *message, int is_death);
 void		philo_sleep(t_philosopher *philo, long long duration_ms);
 
+// init.c
 int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
 
 void		*philosopher_lifecycle(void *arg);

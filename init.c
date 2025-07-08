@@ -6,13 +6,13 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/05 19:48:25 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/08 18:35:52 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	parse_arguments(t_simulation *sim, int argc, char *argv[])
+static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
 {
 	if (argc != 5 && argc != 6)
 		return (print_error("Error: Wrong number of arguments\n"));
@@ -77,7 +77,7 @@ static int	initialize_mutexes(t_simulation *sim)
 
 int	initialize_simulation(t_simulation *sim, int argc, char *argv[])
 {
-	if (parse_arguments(sim, argc, argv) != SUCCESS)
+	if (parse_cmd_line_args(sim, argc, argv) != SUCCESS)
 		return (FAILURE);
 	if (setup_philosophers(sim) != SUCCESS)
 		return (FAILURE);

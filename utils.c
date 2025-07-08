@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/08 00:05:08 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/08 14:58:26 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
  * This function calulates the length of the error message and writes it
  * to file descriptor 2 (stderr), then returns the failure status code (1).
  * 
- * @param error_message Null-terminated string containing the error message to display
+ * @param error_message Null-terminated string containing the error message
+ *                      to display
  * @return FAILURE indicating the error condition 1
  */
 int	print_error(char *error_message)
@@ -37,9 +38,8 @@ int	print_error(char *error_message)
  * 
  * Parses the string and converts it to an integer, handling leading
  * whitespace, optional sign, and consecutive digits.
- * 
- * Uses long long for intermediate calculations to prevent overflow during conversion,
- * then safely casts to int for the final result.
+ * Uses long long (64-bit) for intermediate calculations to prevent overflow
+ * during conversion, then safely casts to int for the final result.
  * 
  * @param str Null-terminated string to convert
  * @return Converted integer value, or 0 if no valid conversion possible
@@ -96,8 +96,8 @@ long long	get_current_time_ms(void)
  * `t_simulation` structure using a mutex to ensure thread-safe access.
  * 
  * @param sim A pointer to the simulation structure.
- * @return An integer inicating whether the simulation has ended (1 for finished, 0 for not
- *         finished.)
+ * @return An integer inicating whether the simulation has ended
+ *         (1 for finished, 0 for not finished.)
  */
 int	is_simulation_finished(t_simulation *sim)
 {
@@ -123,10 +123,11 @@ int	is_simulation_finished(t_simulation *sim)
  * 
  * @param philo Pointer to the philosopher structure
  * @param message Status message to print (e.g., "is eating", "died")
- * @param is_death Boolean flag indicating if the status message is a death message
- *                 (1 for death, 0 for normal status)
+ * @param is_death Boolean flag indicating if the status message is
+ *                 a death message (1 for death, 0 for normal status)
  */
-void	print_philosopher_status(t_philosopher *philo, const char *message, int is_death)
+void	print_philosopher_status(t_philosopher *philo, const char *message, \
+								int is_death)
 {
 	long long		elapsed_time;
 	t_simulation	*sim;
@@ -143,6 +144,22 @@ void	print_philosopher_status(t_philosopher *philo, const char *message, int is_
 	pthread_mutex_unlock(&sim->print_mutex);
 }
 
+/**
+ * @brief Makes a philosopher sleep for a specified duration
+ *        while monitoring simulation state
+ * 
+ * This function implements a sleep mechanism that allows the philosopher
+ * to sleep for the given duration while periodically checking if the simulation
+ * has ended.
+ * Uses short sleep intervals to ensure responsive termination.
+ * 
+ * @param philo Pointer to the philosopher structure
+ * @param duration_ms Sleep duration in milliseconds
+ * 
+ * @note Function exits early if simulation finishes before sleep completes
+ * @note Uses usleep(500) for fine-grained timing control
+ *       and simulation monitoring
+ */
 void	philo_sleep(t_philosopher *philo, long long duration_ms)
 {
 	long long	start_time;
