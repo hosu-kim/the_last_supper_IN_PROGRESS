@@ -6,12 +6,27 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/10 10:11:15 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/10 22:49:50 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Parses the command-line arguments to configure the simulation.
+ * 
+ * This function validates the number of arguments and parses them to set up
+ * the simulation parameters, such as the number of philosophers (argv[1]),
+ * time to die (argv[2]), time to eat (argv[3]), time to sleep (argv[4]),
+ * and the optional number of required meals (argv[5]).
+ * It performs basic validation to ensure all values are positive.
+ * 
+ * @param sim A pointer to the main simulation structure (t_simulation).
+ * @param argc The count of command-line arguments.
+ * @param argv The array of command-line argument strings.
+ * @return Returns SUCCESS (0) if parsing is successful, otherwise prints an
+ *         error message and returns an error code.
+ */
 static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
 {
 	if (argc != 5 && argc != 6)
@@ -35,6 +50,20 @@ static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
 	return (SUCCESS);
 }
 
+/**
+ * @brief Initializes the philosophers and fork mutexes for the simulation.
+ * 
+ * This function allocates memory for all the philosopher structures and the
+ * corresponding fork mutexes. It then initializes each philosopher with their
+ * unique ID, the indices for their left and right forks, a pointer to the
+ * main simulation structure, and initial values for their meal  count and
+ * last meal time.
+ * 
+ * @param sim A pointer to the main simulation structure (t_simulation).
+ * @return Returns SUCCESS (0) if initialization is successful, otherwise prints
+ *         an error message and returns an error code
+ *         for memory allocation failure.
+ */
 static int	setup_philosophers(t_simulation *sim)
 {
 	int	i;
@@ -64,13 +93,13 @@ static int	initialize_mutexes(t_simulation *sim)
 	i = 0;
 	while (i < sim->philosopher_count)
 	{
-		if (pthread_mutex_init(&sim->fork_mutexes[i], NULL) != 0)
+		if (pthread_mutex_init(&sim->fork_mutexes[i], NULL) != SUCCESS)
 			return (print_error("Error: Fork mutex initialization failed.\n"));
 		i++;
 	}
-	if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
+	if (pthread_mutex_init(&sim->print_mutex, NULL) != SUCCESS)
 		return (print_error("Error: Print mutex initialization failed.\n"));
-	if (pthread_mutex_init(&sim->data_mutex, NULL) != 0)
+	if (pthread_mutex_init(&sim->data_mutex, NULL) != SUCCESS)
 		return (print_error("Error: Data mutex initialization failed.\n"));
 	return (SUCCESS);
 }
