@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/08 18:34:37 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/10 10:17:00 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ typedef struct s_philosopher
 typedef struct s_simulation
 {
 	int				philosopher_count;
-	// ^^^ Number of philosophers in the simulation.
+	// ^^^ Number of philosophers in the simulation; argv[1]
 	int				time_to_die;
-	// ^^^ Time (ms) after which a philosopher dies if not eating.
+	// ^^^ Time (ms) after which a philosopher dies if not eating; argv[2]
 	int				time_to_eat;
-	// ^^^ Time (ms) it takes for a philosopher to eat.
+	// ^^^ Time (ms) it takes for a philosopher to eat; argv[3]
 	int				time_to_sleep;
-	// ^^^ Time (ms) a philosopher sleeps after eating.
+	// ^^^ Time (ms) a philosopher sleeps after eating; argv[4]
 	int				required_meals;
-	// ^^^ Number od meals each philosopher must eat (-1 if unlimited).
+	// ^^^ Number od meals each philosopher must eat (-1 if unlimited); argv[5]
 	int				simulation_ended;
 	// ^^^ Flag indicating if the simulation has ended.
 	long long		start_time;
