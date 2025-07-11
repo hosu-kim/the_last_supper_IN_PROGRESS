@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 00:33:19 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:00:52 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,14 @@
  * @brief Parses the command-line arguments to configure the simulation.
  * 
  * This function validates the number of arguments and parses them to set up
- * the simulation parameters, such as the number of philosophers (argv[1]),
- * time to die (argv[2]), time to eat (argv[3]), time to sleep (argv[4]),
- * and the optional number of required meals (argv[5]).
+ * the simulation parameters, such as:
+ * 
+ * 1. Number of philosophers (argv[1])
+ * 2. Time to die (argv[2])
+ * 3. Time to eat (argv[3])
+ * 4. Time to sleep (argv[4])
+ * 5. Optional: number of required meals (argv[5])
+ * 
  * It performs basic validation to ensure all values are positive.
  * 
  * @param sim A pointer to the main simulation structure (t_simulation).
@@ -35,8 +40,10 @@ static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
 	sim->time_to_die = ft_atoi(argv[2]);
 	sim->time_to_eat = ft_atoi(argv[3]);
 	sim->time_to_sleep = ft_atoi(argv[4]);
-	if (sim->philosopher_count < 1 || sim->time_to_die < 1
-		|| sim->time_to_eat < 1 || sim->time_to_sleep < 1)
+	if (sim->philosopher_count < 1
+		|| sim->time_to_die < 1
+		|| sim->time_to_eat < 1
+		|| sim->time_to_sleep < 1)
 		return (print_error("Error: Invalid argument value.\n"));
 	if (argc == 6)
 	{
@@ -60,7 +67,7 @@ static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
  * last meal time.
  * 
  * @param sim A pointer to the main simulation structure (t_simulation).
- * @return Returns SUCCESS (0) if initialization is successful, otherwise prints
+ * @return Returns SUCCESS (=0) if initialization is successful, otherwise prints
  *         an error message and returns an error code
  *         for memory allocation failure.
  */
@@ -69,7 +76,8 @@ static int	setup_philosophers(t_simulation *sim)
 	int	i;
 
 	sim->philosophers = malloc(sizeof(t_philosopher) * sim->philosopher_count);
-	sim->fork_mutexes = malloc(sizeof(pthread_mutex_t) * sim->philosopher_count);
+	sim->fork_mutexes = malloc(
+			sizeof(pthread_mutex_t) * sim->philosopher_count);
 	if (!sim->philosophers || !sim->fork_mutexes)
 		return (print_error("Error: Memory allocation failed\n"));
 	i = 0;
@@ -77,7 +85,8 @@ static int	setup_philosophers(t_simulation *sim)
 	{
 		sim->philosophers[i].id = i + 1;
 		sim->philosophers[i].left_fork_index = i;
-		sim->philosophers[i].right_fork_index = (i + 1) % sim->philosopher_count;
+		sim->philosophers[i].right_fork_index = \
+		(i + 1) % sim->philosopher_count;
 		sim->philosophers[i].simulation = sim;
 		sim->philosophers[i].meals_eaten = 0;
 		sim->philosophers[i].last_meal_time = 0;
@@ -95,7 +104,7 @@ static int	setup_philosophers(t_simulation *sim)
  * 
  * @param sim A pointer to the t_simulation struct which holds all simulation
  *            data, including the mutexes to be initialized.
- * @return Returns SUCCESS (0) if all mutexes are created successfully.
+ * @return Returns SUCCESS (=0) if all mutexes are created successfully.
  *         If any mutex initialization fails, it returns an error code and prints
  *         a corresponding error message to standard error.
  */
@@ -132,8 +141,8 @@ static int	initialize_mutexes(t_simulation *sim)
  *            will be populated with the simulation's configuration.
  * @param argc The count of command-line arguments passed to the program.
  * @param argv The array of command-line argument strings.
- * @return Returns SUCCESS (0) if the entire simulation is
- *         initialized successfully. Otherwise, it returns FAILURE (1).
+ * @return Returns SUCCESS (=0) if the entire simulation is
+ *         initialized successfully. Otherwise, it returns FAILURE (=1).
  */
 int	initialize_simulation(t_simulation *sim, int argc, char *argv[])
 {

@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/05 15:48:09 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 13:58:43 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static int	check_for_death(t_simulation *sim)
 	current_time = get_current_time_ms();
 	while (i < sim->philosopher_count)
 	{
-		time_since_last_meal = current_time - sim->philosophers[i].last_meal_time;
+		time_since_last_meal = \
+		current_time - sim->philosophers[i].last_meal_time;
 		if (time_since_last_meal >= sim->time_to_die)
 		{
 			sim->simulation_ended = TRUE;
@@ -66,7 +67,8 @@ static int	evaluate_simulation_status(t_simulation *sim)
 	if (death_philosopher_id > 0)
 	{
 		pthread_mutex_unlock(&sim->data_mutex);
-		print_philosopher_status(&sim->philosophers[death_philosopher_id - 1], "died", TRUE);
+		print_philosopher_status(
+			&sim->philosophers[death_philosopher_id - 1], "died", TRUE);
 		return (TRUE);
 	}
 	all_satisfied = check_all_philosophers_satisfied(sim);

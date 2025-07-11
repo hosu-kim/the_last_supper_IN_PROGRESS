@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/10 10:17:00 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:01:27 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,15 @@ int			print_error(char *error_message);
 int			ft_atoi(const char *str);
 long long	get_current_time_ms(void);
 int			is_simulation_finished(t_simulation *sim);
-void		print_philosopher_status(t_philosopher *philo, const char *message, int is_death);
-void		philo_sleep(t_philosopher *philo, long long duration_ms);
+void		print_philosopher_status(
+				t_philosopher *philo, const char *message, int is_death);
 
 // init.c
 int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
 
+// philo.c
 void		*philosopher_lifecycle(void *arg);
+void		philo_sleep(t_philosopher *philo, long long duration_ms);
 
 void		monitor_simulation_and_cleanup(t_simulation *sim);
 

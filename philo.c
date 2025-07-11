@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/05 19:48:25 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 13:54:55 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	release_forks(t_philosopher *philo, t_simulation *sim)
 static void	philosopher_eat(t_philosopher *philo)
 {
 	t_simulation	*sim;
-	
+
 	sim = philo->simulation;
 	if (sim->philosopher_count == 1)
 	{
@@ -49,15 +49,12 @@ static void	philosopher_eat(t_philosopher *philo)
 		pthread_mutex_unlock(&sim->fork_mutexes[philo->left_fork_index]);
 		return ;
 	}
-	
 	acquire_forks(philo, sim);
 	print_philosopher_status(philo, "is eating", FALSE);
-	
 	pthread_mutex_lock(&sim->data_mutex);
 	philo->last_meal_time = get_current_time_ms();
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&sim->data_mutex);
-	
 	philo_sleep(philo, sim->time_to_eat);
 	release_forks(philo, sim);
 }
@@ -85,4 +82,35 @@ void	*philosopher_lifecycle(void *arg)
 			usleep(100);
 	}
 	return (NULL);
+}
+
+/**
+ * @brief Makes a philosopher sleep for a specified duration
+ *        while monitoring simulation state
+ * 
+ * This function implements a sleep mechanism that allows the philosopher
+ * to sleep for the given duration while periodically checking if the simulation
+ * has ended.
+ * Uses short sleep intervals to ensure responsive termination.
+ * 
+ * @param philo Pointer to the philosopher structure
+ * @param duration_ms Sleep duration in milliseconds
+ * 
+ * @note Function exits early if simulation finishes before sleep completes
+ * @note Uses usleep(500) for fine-grained timing control
+ *       and simulation monitoring
+ */
+void	philo_sleep(t_philosopher *philo, long long duration_ms)
+{
+	long long	start_time;
+	long long	elapsed_time;
+
+	start_time = get_current_time_ms();
+	while (!is_simulation_finished(philo->simulation))
+	{
+		elapsed_time = get_current_time_ms() - start_time;
+		if (elapsed_time >= duration_ms)
+			break ;
+		usleep(500);
+	}
 }
