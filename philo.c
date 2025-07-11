@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 15:02:22 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 18:49:51 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	release_forks(t_philosopher *philo, t_simulation *sim)
  * @note Uses usleep(500) for fine-grained timing control
  *       and simulation monitoring
  */
-static void	philo_sleep(t_philosopher *philo, long long duration_ms)
+static void	philosopher_sleep(t_philosopher *philo, long long sleep_duration_ms)
 {
 	long long	start_time;
 	long long	elapsed_time;
@@ -83,7 +83,7 @@ static void	philo_sleep(t_philosopher *philo, long long duration_ms)
 	while (!is_simulation_finished(philo->simulation))
 	{
 		elapsed_time = get_current_time_ms() - start_time;
-		if (elapsed_time >= duration_ms)
+		if (elapsed_time >= sleep_duration_ms)
 			break ;
 		usleep(500);
 	}
@@ -116,7 +116,7 @@ static void	philosopher_eat(t_philosopher *philo)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
 		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
-		philo_sleep(philo, sim->time_to_die + 1);
+		philosopher_sleep(philo, sim->time_to_die + 1);
 		pthread_mutex_unlock(&sim->fork_mutexes[philo->left_fork_index]);
 		return ;
 	}
@@ -126,7 +126,7 @@ static void	philosopher_eat(t_philosopher *philo)
 	philo->last_meal_time = get_current_time_ms();
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&sim->data_mutex);
-	philo_sleep(philo, sim->time_to_eat);
+	philosopher_sleep(philo, sim->time_to_eat);
 	release_forks(philo, sim);
 }
 
@@ -170,7 +170,7 @@ void	*philosopher_lifecycle(void *arg)
 		if (is_simulation_finished(sim))
 			break ;
 		print_philosopher_status(philo, "is sleeping", NOT_DEAD);
-		philo_sleep(philo, sim->time_to_sleep);
+		philosopher_sleep(philo, sim->time_to_sleep);
 		if (is_simulation_finished(sim))
 			break ;
 		print_philosopher_status(philo, "is thinking", NOT_DEAD);
