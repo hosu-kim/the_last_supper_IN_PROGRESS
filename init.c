@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:00:52 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:09:49 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
  * @param sim A pointer to the main simulation structure (t_simulation).
  * @param argc The count of command-line arguments.
  * @param argv The array of command-line argument strings.
- * @return Returns SUCCESS (0) if parsing is successful, otherwise prints an
+ * @return Returns SUCCESS (=0) if parsing is successful, otherwise prints an
  *         error message and returns an error code.
  */
 static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])

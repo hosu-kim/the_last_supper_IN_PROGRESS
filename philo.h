@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:07:15 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:36:11 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
 
 // philo.c
 void		*philosopher_lifecycle(void *arg);
-void		philo_sleep(t_philosopher *philo, long long duration_ms);
 
 void		monitor_simulation_and_cleanup(t_simulation *sim);
 
