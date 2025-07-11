@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 13:54:55 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:06:49 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@ static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
 	if (philo->id % 2 == 1)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a fork", FALSE);
+		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
-		print_philosopher_status(philo, "has taken a fork", FALSE);
+		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
 	}
 	else
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
-		print_philosopher_status(philo, "has taken a fork", FALSE);
+		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a fork", FALSE);
+		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
 	}
 }
 

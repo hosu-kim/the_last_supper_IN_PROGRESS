@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 13:58:43 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:05:32 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	check_for_death(t_simulation *sim)
 		}
 		i++;
 	}
-	return (FALSE);
+	return (NOT_DEAD);
 }
 
 static int	check_all_philosophers_satisfied(t_simulation *sim)

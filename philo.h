@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:01:27 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 14:07:15 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define FAILURE 1
 # define TRUE 1
 # define FALSE 0
+# define DEAD 1
+# define NOT_DEAD 0
 
 typedef struct s_simulation	t_simulation;
 
@@ -81,7 +83,7 @@ int			ft_atoi(const char *str);
 long long	get_current_time_ms(void);
 int			is_simulation_finished(t_simulation *sim);
 void		print_philosopher_status(
-				t_philosopher *philo, const char *message, int is_death);
+				t_philosopher *philo, const char *message, int is_dead);
 
 // init.c
 int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
