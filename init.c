@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/10 22:49:50 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 00:33:19 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,19 @@ static int	setup_philosophers(t_simulation *sim)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Initializes all the mutexes required for the simulation.
+ * 
+ * This function initializes a mutex for each fork, a mutex for controlling
+ * print statements (to prevent garbled output), and a mutex for protecting
+ * shared data within the simulation structure.
+ * 
+ * @param sim A pointer to the t_simulation struct which holds all simulation
+ *            data, including the mutexes to be initialized.
+ * @return Returns SUCCESS (0) if all mutexes are created successfully.
+ *         If any mutex initialization fails, it returns an error code and prints
+ *         a corresponding error message to standard error.
+ */
 static int	initialize_mutexes(t_simulation *sim)
 {
 	int	i;
@@ -104,6 +117,24 @@ static int	initialize_mutexes(t_simulation *sim)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Initializes the entire simulation structrue.
+ * 
+ * This function serves as the main entry point for initialization.
+ * It calls helper functions in sequence to:
+ * 1. Parse the command-line arguments.
+ * 2. Set up the philosopher structures and fork mutexes.
+ * 3. Initialize all necessary mutexes for synchronization.
+ * If any of these steps fail, the function will immediately abort the
+ * initialization process and return a failure status.
+ * 
+ * @param sim A pointer to the main simulation structure (t_simulation) that
+ *            will be populated with the simulation's configuration.
+ * @param argc The count of command-line arguments passed to the program.
+ * @param argv The array of command-line argument strings.
+ * @return Returns SUCCESS (0) if the entire simulation is
+ *         initialized successfully. Otherwise, it returns FAILURE (1).
+ */
 int	initialize_simulation(t_simulation *sim, int argc, char *argv[])
 {
 	if (parse_cmd_line_args(sim, argc, argv) != SUCCESS)
