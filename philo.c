@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 18:49:51 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/11 23:59:27 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,31 +59,32 @@ static void	release_forks(t_philosopher *philo, t_simulation *sim)
 }
 
 /**
- * @brief Makes a philosopher sleep for a specified duration
- *        while monitoring simulation state
+ * @brief Makes a philosopher wait for a specified duration
+ *        while monitoring the simulation's state.
  * 
- * This function implements a sleep mechanism that allows the philosopher
- * to sleep for the given duration while periodically checking if the simulation
- * has ended.
- * Uses short sleep intervals to ensure responsive termination.
+ * This function implements a precise delay by looping in short intervals
+ * (`usleep`) until the total specified duration has passed.
+ * During this time, it continuously checks if the simulation has concluded,
+ * ensuring the philosopher can react promptly to the end state.
  * 
- * @param philo Pointer to the philosopher structure
- * @param duration_ms Sleep duration in milliseconds
+ * @param philo Pointer to the philosopher's data structure
+ * @param duration_ms The total time to wait, in milliseconds.
  * 
- * @note Function exits early if simulation finishes before sleep completes
- * @note Uses usleep(500) for fine-grained timing control
- *       and simulation monitoring
+ * @note The function will exit before the full duration has elapsed if the
+ *       simulation is detected to have finished.
+ * @note It uses `usleep(500)` for fine-grained delay, allowing for responsive
+ *       checking of the simulation's status.
  */
-static void	philosopher_sleep(t_philosopher *philo, long long sleep_duration_ms)
+static void	philo_spend_time(t_philosopher *philo, long long duration_ms)
 {
-	long long	start_time;
+	long long	sleep_start_time;
 	long long	elapsed_time;
 
-	start_time = get_current_time_ms();
+	sleep_start_time = get_current_time_ms();
 	while (!is_simulation_finished(philo->simulation))
 	{
-		elapsed_time = get_current_time_ms() - start_time;
-		if (elapsed_time >= sleep_duration_ms)
+		elapsed_time = get_current_time_ms() - sleep_start_time;
+		if (elapsed_time >= duration_ms)
 			break ;
 		usleep(500);
 	}
@@ -96,8 +97,7 @@ static void	philosopher_sleep(t_philosopher *philo, long long sleep_duration_ms)
  * 
  * 1. Edge case (There's only one philosopher):
  *    The philosopher will take one fork and wait until they starve,
- *    as there's no another fork.
- *    This allows the simulation to end correctly.
+ *    as there's no another fork. This allows the simulation to end correctly.
  * 
  * 2. Normal case:
  *    The philosopher acquires both forks, eats for the specified `time_to_eat`,
@@ -116,7 +116,7 @@ static void	philosopher_eat(t_philosopher *philo)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
 		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
-		philosopher_sleep(philo, sim->time_to_die + 1);
+		philo_spend_time(philo, sim->time_to_die + 1);
 		pthread_mutex_unlock(&sim->fork_mutexes[philo->left_fork_index]);
 		return ;
 	}
@@ -126,7 +126,7 @@ static void	philosopher_eat(t_philosopher *philo)
 	philo->last_meal_time = get_current_time_ms();
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&sim->data_mutex);
-	philosopher_sleep(philo, sim->time_to_eat);
+	philo_spend_time(philo, sim->time_to_eat);
 	release_forks(philo, sim);
 }
 
@@ -170,7 +170,7 @@ void	*philosopher_lifecycle(void *arg)
 		if (is_simulation_finished(sim))
 			break ;
 		print_philosopher_status(philo, "is sleeping", NOT_DEAD);
-		philosopher_sleep(philo, sim->time_to_sleep);
+		philo_spend_time(philo, sim->time_to_sleep);
 		if (is_simulation_finished(sim))
 			break ;
 		print_philosopher_status(philo, "is thinking", NOT_DEAD);
