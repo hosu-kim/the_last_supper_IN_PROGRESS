@@ -6,12 +6,25 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:05:32 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/12 14:39:12 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief Checks if any philosopher has died from sarvation.
+ * 
+ * This function iterates through all philosophers and calculates
+ * the time elapsed since their last meal. If this time exceeds the simulation's
+ * 'time_to_die', it flags the simulation as edned and returns the ID of the
+ * deceased philosopher.
+ * 
+ * @param sim A pointer to the main simulation structure,
+ *         containing the state of all philosophers and simulation parameters.
+ * @return Returns the ID of the philosopher who died.
+ *         If no one has died, it returns NOT_DEAD (=0).
+ */
 static int	check_for_death(t_simulation *sim)
 {
 	int			i;
@@ -34,6 +47,19 @@ static int	check_for_death(t_simulation *sim)
 	return (NOT_DEAD);
 }
 
+/**
+ * @brief Checks if all philosophers have eaten the required number of meals.
+ * 
+ * This function determines if the simulation should end
+ * because all philosophers are satisfied. It only performs the check if
+ * the 'required meals' argument was provided for the simulation.
+ * If every philosopher has eaten at least the required number of meals,
+ * it flags the simulation as ended.
+ * 
+ * @param sim A pointer to the main simulation structure.
+ * @return Returns TRUE (=1) if all philosophers have met the meal requirement.
+ *         Otherwise, it returns FALSE (=0).
+ */
 static int	check_all_philosophers_satisfied(t_simulation *sim)
 {
 	int	i;
@@ -59,16 +85,16 @@ static int	check_all_philosophers_satisfied(t_simulation *sim)
 
 static int	evaluate_simulation_status(t_simulation *sim)
 {
-	int	death_philosopher_id;
+	int	dead_philosopher_id;
 	int	all_satisfied;
 
 	pthread_mutex_lock(&sim->data_mutex);
-	death_philosopher_id = check_for_death(sim);
-	if (death_philosopher_id > 0)
+	dead_philosopher_id = check_for_death(sim);
+	if (dead_philosopher_id > 0)
 	{
 		pthread_mutex_unlock(&sim->data_mutex);
 		print_philosopher_status(
-			&sim->philosophers[death_philosopher_id - 1], "died", TRUE);
+			&sim->philosophers[dead_philosopher_id - 1], "died", TRUE);
 		return (TRUE);
 	}
 	all_satisfied = check_all_philosophers_satisfied(sim);
