@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/14 17:02:27 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/14 17:18:31 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ static void	philosopher_eat(t_philosopher *philo)
  * 
  * Continuously cycles through eating, sleeping, and thinking until the
  * simulation ends. Implements deadlock prevention through staggered starts
- * and livelock prevention for oddphilsopher counts.
+ * and livelock prevention for odd philsopher counts.
  * 
  * Key features:
  * 1. Even-numbered philsophers start with a delay to reduce contention
