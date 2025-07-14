@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/14 17:18:31 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/14 17:52:43 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
 		print_philosopher_status(philo, "has taken a left fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
 		print_philosopher_status(philo, "has taken a right fork", NOT_DEAD);
+	}
+	else if (philo->id % 2 == 1)
+	{
+		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
+		print_philosopher_status(philo, "has taken a right fork", NOT_DEAD);
+		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
+		print_philosopher_status(philo, "has taken a left fork", NOT_DEAD);
 	}
 	else
 	{
@@ -77,16 +84,23 @@ static void	release_forks(t_philosopher *philo, t_simulation *sim)
  */
 static void	philo_spend_time(t_philosopher *philo, long long duration_ms)
 {
-	long long	sleep_start_time;
-	long long	elapsed_time;
+	long long	start_time;
+	long long	current_time;
+	long long	remaining_time;
 
-	sleep_start_time = get_current_time_ms();
+	start_time = get_current_time_ms();
 	while (!is_simulation_finished(philo->simulation))
 	{
-		elapsed_time = get_current_time_ms() - sleep_start_time;
-		if (elapsed_time >= duration_ms)
+		current_time = get_current_time_ms();
+		if (current_time - start_time >= duration_ms)
 			break ;
-		usleep(500);
+		remaining_time = duration_ms - (current_time - start_time);
+		if (remaining_time > 10)
+			usleep(1000);
+		else if (remaining_time > 1)
+			usleep(100);
+		else
+			usleep(10);
 	}
 }
 
