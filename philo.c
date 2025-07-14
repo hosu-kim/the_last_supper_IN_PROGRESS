@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 23:59:27 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/14 17:02:27 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,29 +131,20 @@ static void	philosopher_eat(t_philosopher *philo)
 }
 
 /**
- * @brief The main lifecycle function for a philosopher thread.
+ * @brief Main lifecycle function for a philosopher thread.
  * 
- * This function serves as the entry point for each philosopher thread.
- * It continuously loops through the states of eating, sleeping, and
- * thinking until the simulation is flagged to be over.
+ * Continuously cycles through eating, sleeping, and thinking until the
+ * simulation ends. Implements deadlock prevention through staggered starts
+ * and livelock prevention for oddphilsopher counts.
  * 
- * Key logic:
- * 1. **Staggered Start**: `Even-numbered philosophers are delayed` initially
- *    to prevent them from all competing for forks at the same time.
+ * Key features:
+ * 1. Even-numbered philsophers start with a delay to reduce contention
+ * 2. Checks simulation status after each major action for prompt terminiation
+ * 3. Adds small thinking delay for odd counts to prevent livelock
  * 
- * 2. **Main Loop**: `The loop continutes` as long as the simulation is active.
- * 
- * 3. **Actions**: Inside the loop, the philosopher `eats, sleeps, and thinks`.
- * 
- * 4. **Termination Check**: The simulation's `status is checked` after
- *    each major action (eating, sleeping) to ensure the thread exits promptly
- *    when the simulation ends (e.g., due to a death or all meals eaten).
- * 
- * 5. **Synchronization**: A small delay is added for thinking when there's
- *    an odd number of philosophers to help prevent livelock scenarios.
- * 
- * @param arg A void pointer to the philosopher's `t_philosopher` structure.
- * @return Returns NULL when the thread finishes execution.
+ * @param arg Pointer to the philosopher's t_philosopher structure
+ * @return NULL on thread completion.
+ *         - Thread functions created by pthread_create() must return void *
  */
 void	*philosopher_lifecycle(void *arg)
 {
