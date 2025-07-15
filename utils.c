@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/15 22:28:54 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/15 22:43:58 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	is_simulation_finished(t_simulation *sim)
 }
 
 /**
- * @brief Prints the current status of a philosopher with timestamp.
+ * @brief Prints the current `status message` of a philosopher with `timestamp`.
  * 
  * This function safely prints philosopher status messages (eating, sleeping,
  * thinking, taking fork, or dying) with proper synchronization using mutex.
