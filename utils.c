@@ -6,21 +6,20 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 13:58:08 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/15 22:28:54 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /**
- * @brief Prints the provided error message to standard error output.
+ * @brief `Prints` the provided `error message` to standard error output.
  * 
  * This function calulates the length of the error message and writes it
- * to file descriptor 2 (stderr), then returns the failure status code (1).
+ * to file descriptor (=2, stderr), then returns FAILURE (=1).
  * 
  * @param error_message Null-terminated string containing the error message
- *                      to display
- * @return FAILURE indicating the error condition 1
+ * @return FAILURE indicating the error condition (=1)
  */
 int	print_error(char *error_message)
 {
@@ -34,7 +33,7 @@ int	print_error(char *error_message)
 }
 
 /**
- * @brief Converts a string to an integer. atoi implementation)
+ * @brief Converts a string to an integer (atoi implementation)
  * 
  * Parses the string and converts it to an integer, handling leading
  * whitespace, optional sign, and consecutive digits.
@@ -71,7 +70,7 @@ int	ft_atoi(const char *str)
  * This function utilizes the gettimeofday() system call to retrieve the
  * time elapsed since the Unix epoch (1970-01-01 00:00:00 UTC).
  * 
- * The time is stored in a `timeeval` struct, which contains:
+ * The time is stored in a `timeeval` structure, which contains:
  * - tv_sec: The number of seconds.
  * - tv_usec: The number of additional microseconds.
  * 
