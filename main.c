@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:52:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/14 17:33:03 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/16 00:11:53 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ static int	launch_philosopher_threads(t_simulation *sim)
 	int	i;
 
 	i = 0;
-	sim->start_time = get_current_time_ms();
+	sim->sim_start_time = get_current_time_ms();
 	while (i < sim->philosopher_count)
 	{
-		sim->philosophers[i].last_meal_time = sim->start_time;
+		sim->philosophers[i].last_meal_time = sim->sim_start_time;
 		if (pthread_create(&sim->philosophers[i].thread, NULL, \
 				philosopher_lifecycle, &sim->philosophers[i]) != SUCCESS)
 			return (

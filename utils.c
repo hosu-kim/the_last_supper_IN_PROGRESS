@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/15 22:43:58 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/16 00:12:46 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,19 +125,19 @@ int	is_simulation_finished(t_simulation *sim)
  * @param is_death Boolean flag indicating if the status message is
  *                 a death message (1 for death, 0 for normal status)
  */
-void	print_philosopher_status(
-	t_philosopher *philo, const char *message, int is_death)
+void	print_timestamp_and_philo_status_msg(
+	t_philosopher *philo, const char *message, int is_dead)
 {
 	long long		elapsed_time;
 	t_simulation	*sim;
 
 	sim = philo->simulation;
 	pthread_mutex_lock(&sim->print_mutex);
-	if (!sim->simulation_ended || is_death)
+	if (!sim->simulation_ended || is_dead)
 	{
-		elapsed_time = get_current_time_ms() - sim->start_time;
+		elapsed_time = get_current_time_ms() - sim->sim_start_time;
 		printf("%lld %d %s\n", elapsed_time, philo->id, message);
-		if (is_death)
+		if (is_dead == TRUE)
 			sim->simulation_ended = TRUE;
 	}
 	pthread_mutex_unlock(&sim->print_mutex);

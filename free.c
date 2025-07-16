@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/12 17:12:10 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/16 00:10:59 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ static int	evaluate_simulation_status(t_simulation *sim)
 	if (dead_philosopher_id > 0)
 	{
 		pthread_mutex_unlock(&sim->data_mutex);
-		print_philosopher_status(
+		print_timestamp_and_philo_status_msg(
 			&sim->philosophers[dead_philosopher_id - 1], "died", TRUE);
 		return (TRUE);
 	}

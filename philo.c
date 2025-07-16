@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/14 17:52:43 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/16 00:10:59 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,23 @@ static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
 	if (philo->id % 2 == 1)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a left fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
-		print_philosopher_status(philo, "has taken a right fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
 	}
 	else if (philo->id % 2 == 1)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
-		print_philosopher_status(philo, "has taken a right fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a left fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
 	}
 	else
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->right_fork_index]);
-		print_philosopher_status(philo, "has taken a right fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a left fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
 	}
 }
 
@@ -129,13 +129,13 @@ static void	philosopher_eat(t_philosopher *philo)
 	if (sim->philosopher_count == 1)
 	{
 		pthread_mutex_lock(&sim->fork_mutexes[philo->left_fork_index]);
-		print_philosopher_status(philo, "has taken a fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "has taken a fork", NOT_DEAD);
 		philo_spend_time(philo, sim->time_to_die + 1);
 		pthread_mutex_unlock(&sim->fork_mutexes[philo->left_fork_index]);
 		return ;
 	}
 	acquire_forks(philo, sim);
-	print_philosopher_status(philo, "is eating", NOT_DEAD);
+	print_timestamp_and_philo_status_msg(philo, "is eating", NOT_DEAD);
 	pthread_mutex_lock(&sim->data_mutex);
 	philo->last_meal_time = get_current_time_ms();
 	philo->meals_eaten++;
@@ -174,11 +174,11 @@ void	*philosopher_lifecycle(void *arg)
 		philosopher_eat(philo);
 		if (is_simulation_finished(sim))
 			break ;
-		print_philosopher_status(philo, "is sleeping", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "is sleeping", NOT_DEAD);
 		philo_spend_time(philo, sim->time_to_sleep);
 		if (is_simulation_finished(sim))
 			break ;
-		print_philosopher_status(philo, "is thinking", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(philo, "is thinking", NOT_DEAD);
 		if (sim->philosopher_count % 2 == 1)
 			usleep(100);
 	}

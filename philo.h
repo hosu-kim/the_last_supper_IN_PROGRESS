@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:36:11 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/16 00:11:53 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_simulation
 	// ^^^ Number od meals each philosopher must eat (-1 if unlimited); argv[5]
 	int				simulation_ended;
 	// ^^^ Flag indicating if the simulation has ended.
-	long long		start_time;
+	long long		sim_start_time;
 	// ^^^ Timestamp when the simulation started (in milliseconds).
 	t_philosopher	*philosophers; // < Array of philosopher structures.
 	pthread_mutex_t	*fork_mutexes; // < Array of mutex locks for each fork.
@@ -82,7 +82,7 @@ int			print_error(char *error_message);
 int			ft_atoi(const char *str);
 long long	get_current_time_ms(void);
 int			is_simulation_finished(t_simulation *sim);
-void		print_philosopher_status(
+void		print_timestamp_and_philo_status_msg(
 				t_philosopher *philo, const char *message, int is_dead);
 
 // init.c
