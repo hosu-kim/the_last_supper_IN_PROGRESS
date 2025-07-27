@@ -6,17 +6,17 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/16 00:12:46 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 20:09:58 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /**
- * @brief `Prints` the provided `error message` to standard error output.
+ * @brief `Prints` the provided `error message` to standard error (=2) output.
  * 
  * This function calulates the length of the error message and writes it
- * to file descriptor (=2, stderr), then returns FAILURE (=1).
+ * to file descriptor (stderr=2), then returns FAILURE (=1).
  * 
  * @param error_message Null-terminated string containing the error message
  * @return FAILURE indicating the error condition (=1)
@@ -37,6 +37,7 @@ int	print_error(char *error_message)
  * 
  * Parses the string and converts it to an integer, handling leading
  * whitespace, optional sign, and consecutive digits.
+ * 
  * Uses long long (64-bit) for intermediate calculations to prevent overflow
  * during conversion, then safely casts to int for the final result.
  * 
@@ -124,6 +125,10 @@ int	is_simulation_finished(t_simulation *sim)
  * @param message Status message to print (e.g., "is eating", "died")
  * @param is_death Boolean flag indicating if the status message is
  *                 a death message (1 for death, 0 for normal status)
+ * @note
+ * if (sim->simulation_ended == FALSE || is_dead == TRUE)
+ *  1. sim->simulation_ended == FALSE : Prints general status messages.
+ *  2. is_dead == TRUE : Prints death message.
  */
 void	print_timestamp_and_philo_status_msg(
 	t_philosopher *philo, const char *message, int is_dead)
@@ -132,13 +137,13 @@ void	print_timestamp_and_philo_status_msg(
 	t_simulation	*sim;
 
 	sim = philo->simulation;
-	pthread_mutex_lock(&sim->print_mutex);
-	if (!sim->simulation_ended || is_dead)
+	pthread_mutex_lock(&sim->mutex_for_printing);
+	if (sim->simulation_ended == FALSE || is_dead == TRUE)
 	{
 		elapsed_time = get_current_time_ms() - sim->sim_start_time;
 		printf("%lld %d %s\n", elapsed_time, philo->id, message);
 		if (is_dead == TRUE)
 			sim->simulation_ended = TRUE;
 	}
-	pthread_mutex_unlock(&sim->print_mutex);
+	pthread_mutex_unlock(&sim->mutex_for_printing);
 }

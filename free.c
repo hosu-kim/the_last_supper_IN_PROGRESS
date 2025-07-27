@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/16 00:10:59 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ static void	cleanup_simulation_resources(t_simulation *sim)
 	i = -1;
 	while (++i < sim->philosopher_count)
 		pthread_mutex_destroy(&sim->fork_mutexes[i]);
-	pthread_mutex_destroy(&sim->print_mutex);
+	pthread_mutex_destroy(&sim->mutex_for_printing);
 	pthread_mutex_destroy(&sim->data_mutex);
 	if (sim->philosophers)
 	{

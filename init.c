@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/11 14:09:49 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 /**
  * @brief Parses the command-line arguments to configure the simulation.
  * 
- * This function validates the number of arguments and parses them to set up
+ * This function validates the number of arguments
+ * and parses them to set up
  * the simulation parameters, such as:
  * 
  * 1. Number of philosophers (argv[1])
@@ -119,7 +120,7 @@ static int	initialize_mutexes(t_simulation *sim)
 			return (print_error("Error: Fork mutex initialization failed.\n"));
 		i++;
 	}
-	if (pthread_mutex_init(&sim->print_mutex, NULL) != SUCCESS)
+	if (pthread_mutex_init(&sim->mutex_for_printing, NULL) != SUCCESS)
 		return (print_error("Error: Print mutex initialization failed.\n"));
 	if (pthread_mutex_init(&sim->data_mutex, NULL) != SUCCESS)
 		return (print_error("Error: Data mutex initialization failed.\n"));

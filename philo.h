@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/16 00:11:53 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_simulation
 	// ^^^ Timestamp when the simulation started (in milliseconds).
 	t_philosopher	*philosophers; // < Array of philosopher structures.
 	pthread_mutex_t	*fork_mutexes; // < Array of mutex locks for each fork.
-	pthread_mutex_t	print_mutex; // < Mutex for synchronized printing to stdout.
+	pthread_mutex_t	mutex_for_printing; // < Mutex for synchronized printing to stdout.
 	pthread_mutex_t	data_mutex; // < Mutex for protecting shared data access.
 }	t_simulation;
 
