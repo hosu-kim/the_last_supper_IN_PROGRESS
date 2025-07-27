@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 21:13:32 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ static int	parse_cmd_line_args(t_simulation *sim, int argc, char *argv[])
  * @return Returns SUCCESS (=0) if initialization is successful, otherwise prints
  *         an error message and returns an error code
  *         for memory allocation failure.
+ * @note 
+ * sim->philosophers[i]
+ * : Array access is calculated by the compiler using struct size intervals.
  */
 static int	setup_philosophers(t_simulation *sim)
 {
