@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,17 +106,17 @@ static int	evaluate_simulation_status(t_simulation *sim)
 	int	dead_philosopher_id;
 	int	all_satisfied;
 
-	pthread_mutex_lock(&sim->data_mutex);
+	pthread_mutex_lock(&sim->mutex_for_shared_data);
 	dead_philosopher_id = check_for_death(sim);
 	if (dead_philosopher_id > 0)
 	{
-		pthread_mutex_unlock(&sim->data_mutex);
+		pthread_mutex_unlock(&sim->mutex_for_shared_data);
 		print_timestamp_and_philo_status_msg(
 			&sim->philosophers[dead_philosopher_id - 1], "died", TRUE);
 		return (TRUE);
 	}
 	all_satisfied = check_all_philosophers_satisfied(sim);
-	pthread_mutex_unlock(&sim->data_mutex);
+	pthread_mutex_unlock(&sim->mutex_for_shared_data);
 	return (all_satisfied);
 }
 
@@ -146,18 +146,18 @@ static void	cleanup_simulation_resources(t_simulation *sim)
 		pthread_join(sim->philosophers[i].thread, NULL);
 	i = -1;
 	while (++i < sim->philosopher_count)
-		pthread_mutex_destroy(&sim->fork_mutexes[i]);
+		pthread_mutex_destroy(&sim->mutex_for_fork[i]);
 	pthread_mutex_destroy(&sim->mutex_for_printing);
-	pthread_mutex_destroy(&sim->data_mutex);
+	pthread_mutex_destroy(&sim->mutex_for_shared_data);
 	if (sim->philosophers)
 	{
 		free(sim->philosophers);
 		sim->philosophers = NULL;
 	}
-	if (sim->fork_mutexes)
+	if (sim->mutex_for_fork)
 	{
-		free(sim->fork_mutexes);
-		sim->fork_mutexes = NULL;
+		free(sim->mutex_for_fork);
+		sim->mutex_for_fork = NULL;
 	}
 }
 

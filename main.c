@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:52:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/16 00:11:53 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int argc, char *argv[])
 	if (launch_philosopher_threads(&simulation) != SUCCESS)
 	{
 		free(simulation.philosophers);
-		free(simulation.fork_mutexes);
+		free(simulation.mutex_for_fork);
 		return (FAILURE);
 	}
 	monitor_simulation_and_cleanup(&simulation);

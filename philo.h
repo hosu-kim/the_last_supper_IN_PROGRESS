@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 19:58:37 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ typedef struct s_simulation
 	long long		sim_start_time;
 	// ^^^ Timestamp when the simulation started (in milliseconds).
 	t_philosopher	*philosophers; // < Array of philosopher structures.
-	pthread_mutex_t	*fork_mutexes; // < Array of mutex locks for each fork.
+	pthread_mutex_t	*mutex_for_fork; // < Array of mutex locks for each fork.
 	pthread_mutex_t	mutex_for_printing; // < Mutex for synchronized printing to stdout.
-	pthread_mutex_t	data_mutex; // < Mutex for protecting shared data access.
+	pthread_mutex_t	mutex_for_shared_data; // < Mutex for protecting shared data access.
 }	t_simulation;
 
 // utils.c

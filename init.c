@@ -6,9 +6,11 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 18:56:58 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 21:13:32 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 23:38:47 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
+
+/* Code review completed 2025-07-27 */
 
 #include "philo.h"
 
@@ -80,9 +82,9 @@ static int	setup_philosophers(t_simulation *sim)
 	int	i;
 
 	sim->philosophers = malloc(sizeof(t_philosopher) * sim->philosopher_count);
-	sim->fork_mutexes = malloc(
+	sim->mutex_for_fork = malloc(
 			sizeof(pthread_mutex_t) * sim->philosopher_count);
-	if (!sim->philosophers || !sim->fork_mutexes)
+	if (!sim->philosophers || !sim->mutex_for_fork)
 		return (print_error("Error: Memory allocation failed\n"));
 	i = 0;
 	while (i < sim->philosopher_count)
@@ -119,13 +121,13 @@ static int	initialize_mutexes(t_simulation *sim)
 	i = 0;
 	while (i < sim->philosopher_count)
 	{
-		if (pthread_mutex_init(&sim->fork_mutexes[i], NULL) != SUCCESS)
+		if (pthread_mutex_init(&sim->mutex_for_fork[i], NULL) != SUCCESS)
 			return (print_error("Error: Fork mutex initialization failed.\n"));
 		i++;
 	}
 	if (pthread_mutex_init(&sim->mutex_for_printing, NULL) != SUCCESS)
 		return (print_error("Error: Print mutex initialization failed.\n"));
-	if (pthread_mutex_init(&sim->data_mutex, NULL) != SUCCESS)
+	if (pthread_mutex_init(&sim->mutex_for_shared_data, NULL) != SUCCESS)
 		return (print_error("Error: Data mutex initialization failed.\n"));
 	return (SUCCESS);
 }

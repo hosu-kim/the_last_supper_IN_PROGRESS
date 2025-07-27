@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 17:38:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 20:14:27 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/27 23:22:28 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@ int	is_simulation_finished(t_simulation *sim)
 {
 	int	finished;
 
-	pthread_mutex_lock(&sim->data_mutex);
+	pthread_mutex_lock(&sim->mutex_for_shared_data);
 	finished = sim->simulation_ended;
-	pthread_mutex_unlock(&sim->data_mutex);
+	pthread_mutex_unlock(&sim->mutex_for_shared_data);
 	return (finished);
 }
 
