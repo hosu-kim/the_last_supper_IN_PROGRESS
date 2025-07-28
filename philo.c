@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/28 13:37:14 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/28 17:14:51 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,16 @@
  * 
  * @param philo The philosopher who is acquiring the forks.
  * @param sim A pointer to the simulation struct containing the mutexes.
+ * @note
+ *            ---p3->>
+ *        f4 /        \ f3
+ *          /          \^^
+ *         p4          p2
+ *          \          /
+ *        vv \        /
+ *         f0 <<p1--- f1
  */
-static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
+static void	grab_forks_by_rule(t_philosopher *philo, t_simulation *sim)
 {
 	if (philo->id % 2 == 1)
 	{
@@ -32,13 +40,6 @@ static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
 		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
 		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
-	}
-	else if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
-		pthread_mutex_lock(&sim->mutex_for_fork[philo->left_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
 	}
 	else
 	{
@@ -89,7 +90,7 @@ static void	philo_spend_time(t_philosopher *philo, long long duration_ms)
 	long long	remaining_time;
 
 	start_time = get_current_time_ms();
-	while (!is_simulation_finished(philo->simulation))
+	while (is_simulation_finished(philo->simulation) == FALSE)
 	{
 		current_time = get_current_time_ms();
 		if (current_time - start_time >= duration_ms)
@@ -134,7 +135,7 @@ static void	philosopher_eat(t_philosopher *philo)
 		pthread_mutex_unlock(&sim->mutex_for_fork[philo->left_fork_index]);
 		return ;
 	}
-	acquire_forks(philo, sim);
+	grab_forks_by_rule(philo, sim);
 	print_timestamp_and_philo_status_msg(philo, "is eating", NOT_DEAD);
 	pthread_mutex_lock(&sim->mutex_for_shared_data);
 	philo->last_meal_time = get_current_time_ms();
@@ -158,7 +159,9 @@ static void	philosopher_eat(t_philosopher *philo)
  * 
  * @param arg Pointer to the philosopher's t_philosopher structure
  * @return NULL on thread completion.
- *         - Thread functions created by pthread_create() must return void *
+ * @note Thread functions created by pthread_create() must return void* and
+ *       acceot void* parameter to comply with pthread standards.
+ *       The void* allows passing any data type through casting.
  */
 void	*philosopher_lifecycle(void *arg)
 {
@@ -169,18 +172,18 @@ void	*philosopher_lifecycle(void *arg)
 	sim = philo->simulation;
 	if (philo->id % 2 == 0)
 		usleep(sim->time_to_eat / 2);
-	while (!is_simulation_finished(sim))
+	while (is_simulation_finished(sim) == FALSE)
 	{
 		philosopher_eat(philo);
-		if (is_simulation_finished(sim))
+		if (is_simulation_finished(sim) == TRUE)
 			break ;
 		print_timestamp_and_philo_status_msg(philo, "is sleeping", NOT_DEAD);
 		philo_spend_time(philo, sim->time_to_sleep);
-		if (is_simulation_finished(sim))
+		if (is_simulation_finished(sim) == TRUE)
 			break ;
 		print_timestamp_and_philo_status_msg(philo, "is thinking", NOT_DEAD);
-		if (sim->philosopher_count % 2 == 1)
-			usleep(100);
+		// if (sim->philosopher_count % 2 == 1)
+		// 	usleep(100);
 	}
 	return (NULL);
 }
