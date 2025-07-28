@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/28 13:37:14 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /**
  * @brief Makes a philosopher acquire their left and right forks.
  * 
- * To preven deadlock, the order of acquiring forks is different
+ * To prevent deadlock, the order of acquiring forks is different
  * depending on whether the philosopher's ID is odd or even:
  * 
  * 1. Odd-numbered philosophers: pick up the left fork first, then the right.
@@ -33,7 +33,7 @@ static void	acquire_forks(t_philosopher *philo, t_simulation *sim)
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
 		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
 	}
-	else if (philo->id % 2 == 1)
+	else if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
 		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
