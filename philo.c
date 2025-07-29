@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/28 17:24:54 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/29 10:22:37 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@
  * @param philo The philosopher who is acquiring the forks.
  * @param sim A pointer to the simulation struct containing the mutexes.
  * @note
- *            ---p3->>
- *        f4 /        \ f3
- *          /          \^^
- *         p4          p2
- *          \          /
- *        vv \        /
- *         f0 <<p1--- f1
+ *       without the logic          with the logic
+ *           ---p3->>                  ---p3->>
+ *        f4/        \f3           f4 /        \ f3
+ *       ^^/          \              /          \^^
+ *        p4          p2            p4          p2
+ *         \          /              \          /
+ *          \        /vv           vv \        /
+ *        f0 <<-p1--- f1            f0 <<p1--- f1
  */
 static void	grab_forks_by_rule(t_philosopher *philo, t_simulation *sim)
 {
