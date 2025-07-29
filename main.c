@@ -6,9 +6,11 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 22:52:51 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/28 17:25:32 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/29 17:53:07 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
+
+/* Code review completed 2025-07-29 */
 
 #include "philo.h"
 
