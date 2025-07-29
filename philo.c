@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/29 16:10:22 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/29 17:51:34 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,20 @@ static void	grab_forks_by_rule(t_philosopher *philo, t_simulation *sim)
 	if (philo->id % 2 == 1)
 	{
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->left_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(
+			philo, "has taken a left fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(
+			philo, "has taken a right fork", NOT_DEAD);
 	}
 	else
 	{
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->right_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a right fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(
+			philo, "has taken a right fork", NOT_DEAD);
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->left_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a left fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(
+			philo, "has taken a left fork", NOT_DEAD);
 	}
 }
 
@@ -133,7 +137,8 @@ static void	philosopher_eat(t_philosopher *philo)
 	if (sim->philosopher_count == 1)
 	{
 		pthread_mutex_lock(&sim->mutex_for_fork[philo->left_fork_index]);
-		print_timestamp_and_philo_status_msg(philo, "has taken a fork", NOT_DEAD);
+		print_timestamp_and_philo_status_msg(
+			philo, "has taken a fork", NOT_DEAD);
 		philo_spend_time(philo, sim->time_to_die + 1);
 		pthread_mutex_unlock(&sim->mutex_for_fork[philo->left_fork_index]);
 		return ;

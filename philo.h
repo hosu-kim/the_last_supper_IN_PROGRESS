@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 16:45:35 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/29 17:51:44 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ typedef struct s_philosopher
 	int				meals_eaten; // < Number of meals eaten so far.
 	int				left_fork_index; // < Index of the left fork.
 	int				right_fork_index; // < Index of the right fork.
+	// vvv Timestamp of the last meal start in milliseconds.
 	long long		last_meal_time;
-	// ^^^ Timestamp of the last meal start in milliseconds.
 	t_simulation	*simulation; // < Pointer to the simulation data.
 	pthread_t		thread; // < Thread handle for this philosopher.
 }	t_philosopher;
@@ -57,24 +57,26 @@ typedef struct s_philosopher
  */
 typedef struct s_simulation
 {
+	// vvv Number of philosophers in the simulation; argv[1]
 	int				philosopher_count;
-	// ^^^ Number of philosophers in the simulation; argv[1]
+	// vvv Time (ms) after which a philosopher dies if not eating; argv[2]
 	int				time_to_die;
-	// ^^^ Time (ms) after which a philosopher dies if not eating; argv[2]
+	// vvv Time (ms) it takes for a philosopher to eat; argv[3]
 	int				time_to_eat;
-	// ^^^ Time (ms) it takes for a philosopher to eat; argv[3]
+	// vvv Time (ms) a philosopher sleeps after eating; argv[4]
 	int				time_to_sleep;
-	// ^^^ Time (ms) a philosopher sleeps after eating; argv[4]
+	// vvv Number od meals each philosopher must eat (-1 if unlimited); argv[5]
 	int				required_meals;
-	// ^^^ Number od meals each philosopher must eat (-1 if unlimited); argv[5]
+	// vvv Flag indicating if the simulation has ended.
 	int				simulation_ended;
-	// ^^^ Flag indicating if the simulation has ended.
+	// vvv Timestamp when the simulation started (in milliseconds).
 	long long		sim_start_time;
-	// ^^^ Timestamp when the simulation started (in milliseconds).
 	t_philosopher	*philosophers; // < Array of philosopher structures.
 	pthread_mutex_t	*mutex_for_fork; // < Array of mutex locks for each fork.
-	pthread_mutex_t	mutex_for_printing; // < Mutex for synchronized printing to stdout.
-	pthread_mutex_t	mutex_for_shared_data; // < Mutex for protecting shared data access.
+	// vvv Mutex for synchronized printing to stdout.
+	pthread_mutex_t	mutex_for_printing;
+	// vvv Mutex for protecting shared data access.
+	pthread_mutex_t	mutex_for_shared_data;
 }	t_simulation;
 
 // utils.c
@@ -91,6 +93,7 @@ int			initialize_simulation(t_simulation *sim, int argc, char *argv[]);
 // philo.c
 void		*philosopher_lifecycle(void *arg);
 
+// free.c
 void		monitor_simulation_and_cleanup(t_simulation *sim);
 
 #endif
