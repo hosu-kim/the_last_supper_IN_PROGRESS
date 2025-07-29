@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:22:39 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/29 10:22:37 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/29 16:10:22 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,8 @@ void	*philosopher_lifecycle(void *arg)
 		if (is_simulation_finished(sim) == TRUE)
 			break ;
 		print_timestamp_and_philo_status_msg(philo, "is thinking", NOT_DEAD);
-		// if (sim->philosopher_count % 2 == 1)
-		// 	usleep(100);
+		if (sim->philosopher_count % 2 == 1)
+			usleep(100);
 	}
 	return (NULL);
 }
