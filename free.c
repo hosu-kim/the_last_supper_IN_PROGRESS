@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/31 16:40:07 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/31 16:40:58 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,16 @@ static int	check_all_philosophers_satisfied(t_simulation *sim)
  */
 static int	evaluate_simulation_status(t_simulation *sim)
 {
-	int	dead_philosopher_id;
+	int	dead_philo_id;
 	int	all_satisfied;
 
 	pthread_mutex_lock(&sim->mutex_for_shared_data);
-	dead_philosopher_id = check_for_death(sim);
-	if (dead_philosopher_id > 0)
+	dead_philo_id = check_for_death(sim);
+	if (dead_philo_id > 0)
 	{
 		pthread_mutex_unlock(&sim->mutex_for_shared_data);
 		print_timestamp_and_philo_status_msg(
-			&sim->philosophers[dead_philosopher_id - 1], "died", TRUE);
+			&sim->philosophers[dead_philo_id - 1], "died", TRUE);
 		return (TRUE);
 	}
 	all_satisfied = check_all_philosophers_satisfied(sim);
