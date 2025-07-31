@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/31 16:40:58 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/31 16:46:50 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,18 +182,18 @@ static void	cleanup_simulation_resources(t_simulation *sim)
  */
 void	monitor_simulation_and_cleanup(t_simulation *sim)
 {
-	int	check_interval_us;
+	int	usleep_interval;
 
-	check_interval_us = sim->time_to_die / 10;
-	if (check_interval_us < 500)
-		check_interval_us = 500;
-	if (check_interval_us > 5000)
-		check_interval_us = 5000;
+	usleep_interval = sim->time_to_die / 10;
+	if (usleep_interval < 500)
+		usleep_interval = 500;
+	if (usleep_interval > 5000)
+		usleep_interval = 5000;
 	while (TRUE)
 	{
 		if (evaluate_simulation_status(sim) == TRUE)
 			break ;
-		usleep(check_interval_us);
+		usleep(usleep_interval);
 	}
 	cleanup_simulation_resources(sim);
 }
