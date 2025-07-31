@@ -6,7 +6,7 @@
 /*   By: hoskim <hoskim@student.42prague.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 19:31:27 by hoskim            #+#    #+#             */
-/*   Updated: 2025/07/27 23:22:56 by hoskim           ###   ########seoul.kr  */
+/*   Updated: 2025/07/31 16:40:07 by hoskim           ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,19 +63,19 @@ static int	check_for_death(t_simulation *sim)
 static int	check_all_philosophers_satisfied(t_simulation *sim)
 {
 	int	i;
-	int	satisfied_count;
+	int	satisfied_philo_count;
 
 	if (sim->required_meals == -1)
 		return (FALSE);
 	i = 0;
-	satisfied_count = 0;
+	satisfied_philo_count = 0;
 	while (i < sim->philosopher_count)
 	{
 		if (sim->philosophers[i].meals_eaten >= sim->required_meals)
-			satisfied_count++;
+			satisfied_philo_count++;
 		i++;
 	}
-	if (satisfied_count >= sim->philosopher_count)
+	if (satisfied_philo_count >= sim->philosopher_count)
 	{
 		sim->simulation_ended = TRUE;
 		return (TRUE);
